@@ -45,6 +45,7 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   fpdart: ^1.2.0
   shared_preferences: ^2.5.5
+  file_picker: ^11.0.2
 
 dev_dependencies:
   flutter_test:

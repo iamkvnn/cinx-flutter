@@ -1,4 +1,3 @@
-import 'package:cinx/features/courses/data/models/course_sort.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';

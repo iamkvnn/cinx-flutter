@@ -7,4 +7,6 @@ class AuthEvent with _$AuthEvent {
   const factory AuthEvent.checkStatus() = _CheckStatus;
   const factory AuthEvent.loginRequested(String email, String password) = _LoginRequested;
   const factory AuthEvent.logoutRequested() = _LogoutRequested;
+  const factory AuthEvent.sendForgotPasswordOtp(String email) = _SendForgotPasswordOtp;
+  const factory AuthEvent.resetPasswordRequested(String email, String otp, String newPassword) = _ResetPasswordRequested;
 }

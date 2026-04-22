@@ -9,4 +9,6 @@ class AuthState with _$AuthState {
   const factory AuthState.authenticated() = _Authenticated;
   const factory AuthState.unauthenticated() = _Unauthenticated;
   const factory AuthState.failure(String message) = _Failure;
+  const factory AuthState.otpSent() = _OtpSent;
+  const factory AuthState.passwordResetSuccess() = _PasswordResetSuccess;
 }

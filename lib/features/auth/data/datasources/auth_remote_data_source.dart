@@ -18,4 +18,13 @@ abstract class AuthRemoteDataSource {
 
   @POST('/api/v1/auth/refresh-token')
   Future<ApiResponse<TokenResponseDto>> refreshToken(@Body() Map<String, dynamic> body);
+
+  @POST('/api/v1/auth/send-change-password-otp')
+  Future<ApiResponse<dynamic>> sendChangePasswordOtp(@Body() Map<String, dynamic> body);
+
+  @POST('/api/v1/auth/reset-password')
+  Future<ApiResponse<dynamic>> resetPassword(@Body() Map<String, dynamic> body);
+
+  @POST('/api/v1/auth/change-password')
+  Future<ApiResponse<dynamic>> changePassword(@Body() Map<String, dynamic> body);
 }

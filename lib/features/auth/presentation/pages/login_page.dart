@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../injection_container.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -19,6 +20,8 @@ class LoginPage extends StatelessWidget {
   }
 }
 
+enum _LoginStep { login, forgotEmail, forgotOtp }
+
 class _LoginView extends StatefulWidget {
   const _LoginView();
 
@@ -29,11 +32,17 @@ class _LoginView extends StatefulWidget {
 class _LoginViewState extends State<_LoginView> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _otpController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  
+  _LoginStep _step = _LoginStep.login;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _otpController.dispose();
+    _newPasswordController.dispose();
     super.dispose();
   }
 
@@ -61,9 +70,23 @@ class _LoginViewState extends State<_LoginView> {
                   listener: (context, state) {
                     state.mapOrNull(
                       authenticated: (_) {
-                        // Normally GoRouter handles this globally,
-                        // but doing it here as fallback/direct navigation.
-                        // context.go('/dashboard'); 
+                        context.go('/dashboard');
+                      },
+                      otpSent: (_) {
+                        setState(() {
+                          _step = _LoginStep.forgotOtp;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('OTP sent to your email')),
+                        );
+                      },
+                      passwordResetSuccess: (_) {
+                        setState(() {
+                          _step = _LoginStep.login;
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Password reset successfully. You can now login.')),
+                        );
                       },
                       failure: (f) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,49 +105,115 @@ class _LoginViewState extends State<_LoginView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Cinx Admin',
+                          _step == _LoginStep.login 
+                              ? 'Cinx Admin' 
+                              : _step == _LoginStep.forgotEmail 
+                                  ? 'Forgot Password'
+                                  : 'Reset Password',
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
                         const SizedBox(height: AppSizes.p32),
-                        TextField(
-                          controller: _emailController,
-                          decoration: const InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: Icon(Icons.email_outlined),
+                        if (_step == _LoginStep.login || _step == _LoginStep.forgotEmail)
+                          TextField(
+                            controller: _emailController,
+                            decoration: const InputDecoration(
+                              labelText: 'Email',
+                              prefixIcon: Icon(Icons.email_outlined),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
                           ),
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: AppSizes.p16),
-                        TextField(
-                          controller: _passwordController,
-                          decoration: const InputDecoration(
-                            labelText: 'Password',
-                            prefixIcon: Icon(Icons.lock_outline),
+                        if (_step == _LoginStep.login) ...[
+                          const SizedBox(height: AppSizes.p16),
+                          TextField(
+                            controller: _passwordController,
+                            decoration: const InputDecoration(
+                              labelText: 'Password',
+                              prefixIcon: Icon(Icons.lock_outline),
+                            ),
+                            obscureText: true,
                           ),
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: AppSizes.p32),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _step = _LoginStep.forgotEmail;
+                                });
+                              },
+                              child: Text('Forgot Password?', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                            ),
+                          ),
+                        ],
+                        if (_step == _LoginStep.forgotOtp) ...[
+                          const SizedBox(height: AppSizes.p16),
+                          TextField(
+                            controller: _otpController,
+                            decoration: const InputDecoration(
+                              labelText: 'OTP',
+                              prefixIcon: Icon(Icons.security),
+                            ),
+                          ),
+                          const SizedBox(height: AppSizes.p16),
+                          TextField(
+                            controller: _newPasswordController,
+                            decoration: const InputDecoration(
+                              labelText: 'New Password',
+                              prefixIcon: Icon(Icons.lock_outline),
+                            ),
+                            obscureText: true,
+                          ),
+                        ],
+                        const SizedBox(height: AppSizes.p24),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: isLoading
                                 ? null
                                 : () {
-                                    context.read<AuthBloc>().add(
-                                          AuthEvent.loginRequested(
-                                            _emailController.text,
-                                            _passwordController.text,
-                                          ),
-                                        );
+                                    if (_step == _LoginStep.login) {
+                                      context.read<AuthBloc>().add(
+                                            AuthEvent.loginRequested(
+                                              _emailController.text,
+                                              _passwordController.text,
+                                            ),
+                                          );
+                                    } else if (_step == _LoginStep.forgotEmail) {
+                                      context.read<AuthBloc>().add(
+                                            AuthEvent.sendForgotPasswordOtp(
+                                              _emailController.text,
+                                            ),
+                                          );
+                                    } else if (_step == _LoginStep.forgotOtp) {
+                                      context.read<AuthBloc>().add(
+                                            AuthEvent.resetPasswordRequested(
+                                              _emailController.text,
+                                              _otpController.text,
+                                              _newPasswordController.text,
+                                            ),
+                                          );
+                                    }
                                   },
                             child: isLoading
                                 ? const CircularProgressIndicator()
-                                : const Text('Login'),
+                                : Text(_step == _LoginStep.login 
+                                    ? 'Login' 
+                                    : _step == _LoginStep.forgotEmail 
+                                        ? 'Send OTP' 
+                                        : 'Reset Password'),
                           ),
                         ),
+                        if (_step != _LoginStep.login)
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                _step = _LoginStep.login;
+                              });
+                            },
+                            child: Text('Back to Login', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                          ),
                       ],
                     );
                   },
@@ -139,5 +228,5 @@ class _LoginViewState extends State<_LoginView> {
 }
 
 class LinearBindingGradient extends LinearGradient {
-  LinearBindingGradient({required super.colors, super.begin, super.end});
+  const LinearBindingGradient({required super.colors, super.begin, super.end});
 }
