@@ -134,10 +134,10 @@ return rejectInstructor(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query,  String? role,  bool? isInstructorVerified)?  fetch,TResult Function()?  loadMore,TResult Function( String id,  String reason)?  banUser,TResult Function( String id)?  unbanUser,TResult Function( String id)?  verifyInstructor,TResult Function( String id,  String reason)?  rejectInstructor,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query,  String? role,  bool? isInstructorVerified,  Map<String, String>? sort)?  fetch,TResult Function()?  loadMore,TResult Function( String id,  String reason)?  banUser,TResult Function( String id)?  unbanUser,TResult Function( String id)?  verifyInstructor,TResult Function( String id,  String reason)?  rejectInstructor,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case FetchUsers() when fetch != null:
-return fetch(_that.query,_that.role,_that.isInstructorVerified);case LoadMoreUsers() when loadMore != null:
+return fetch(_that.query,_that.role,_that.isInstructorVerified,_that.sort);case LoadMoreUsers() when loadMore != null:
 return loadMore();case BanUser() when banUser != null:
 return banUser(_that.id,_that.reason);case UnbanUser() when unbanUser != null:
 return unbanUser(_that.id);case VerifyInstructor() when verifyInstructor != null:
@@ -160,10 +160,10 @@ return rejectInstructor(_that.id,_that.reason);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query,  String? role,  bool? isInstructorVerified)  fetch,required TResult Function()  loadMore,required TResult Function( String id,  String reason)  banUser,required TResult Function( String id)  unbanUser,required TResult Function( String id)  verifyInstructor,required TResult Function( String id,  String reason)  rejectInstructor,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query,  String? role,  bool? isInstructorVerified,  Map<String, String>? sort)  fetch,required TResult Function()  loadMore,required TResult Function( String id,  String reason)  banUser,required TResult Function( String id)  unbanUser,required TResult Function( String id)  verifyInstructor,required TResult Function( String id,  String reason)  rejectInstructor,}) {final _that = this;
 switch (_that) {
 case FetchUsers():
-return fetch(_that.query,_that.role,_that.isInstructorVerified);case LoadMoreUsers():
+return fetch(_that.query,_that.role,_that.isInstructorVerified,_that.sort);case LoadMoreUsers():
 return loadMore();case BanUser():
 return banUser(_that.id,_that.reason);case UnbanUser():
 return unbanUser(_that.id);case VerifyInstructor():
@@ -185,10 +185,10 @@ return rejectInstructor(_that.id,_that.reason);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query,  String? role,  bool? isInstructorVerified)?  fetch,TResult? Function()?  loadMore,TResult? Function( String id,  String reason)?  banUser,TResult? Function( String id)?  unbanUser,TResult? Function( String id)?  verifyInstructor,TResult? Function( String id,  String reason)?  rejectInstructor,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query,  String? role,  bool? isInstructorVerified,  Map<String, String>? sort)?  fetch,TResult? Function()?  loadMore,TResult? Function( String id,  String reason)?  banUser,TResult? Function( String id)?  unbanUser,TResult? Function( String id)?  verifyInstructor,TResult? Function( String id,  String reason)?  rejectInstructor,}) {final _that = this;
 switch (_that) {
 case FetchUsers() when fetch != null:
-return fetch(_that.query,_that.role,_that.isInstructorVerified);case LoadMoreUsers() when loadMore != null:
+return fetch(_that.query,_that.role,_that.isInstructorVerified,_that.sort);case LoadMoreUsers() when loadMore != null:
 return loadMore();case BanUser() when banUser != null:
 return banUser(_that.id,_that.reason);case UnbanUser() when unbanUser != null:
 return unbanUser(_that.id);case VerifyInstructor() when verifyInstructor != null:
@@ -205,12 +205,21 @@ return rejectInstructor(_that.id,_that.reason);case _:
 
 
 class FetchUsers implements UserListEvent {
-  const FetchUsers({this.query, this.role, this.isInstructorVerified});
+  const FetchUsers({this.query, this.role, this.isInstructorVerified, final  Map<String, String>? sort}): _sort = sort;
   
 
  final  String? query;
  final  String? role;
  final  bool? isInstructorVerified;
+ final  Map<String, String>? _sort;
+ Map<String, String>? get sort {
+  final value = _sort;
+  if (value == null) return null;
+  if (_sort is EqualUnmodifiableMapView) return _sort;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
 
 /// Create a copy of UserListEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -222,16 +231,16 @@ $FetchUsersCopyWith<FetchUsers> get copyWith => _$FetchUsersCopyWithImpl<FetchUs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FetchUsers&&(identical(other.query, query) || other.query == query)&&(identical(other.role, role) || other.role == role)&&(identical(other.isInstructorVerified, isInstructorVerified) || other.isInstructorVerified == isInstructorVerified));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FetchUsers&&(identical(other.query, query) || other.query == query)&&(identical(other.role, role) || other.role == role)&&(identical(other.isInstructorVerified, isInstructorVerified) || other.isInstructorVerified == isInstructorVerified)&&const DeepCollectionEquality().equals(other._sort, _sort));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,role,isInstructorVerified);
+int get hashCode => Object.hash(runtimeType,query,role,isInstructorVerified,const DeepCollectionEquality().hash(_sort));
 
 @override
 String toString() {
-  return 'UserListEvent.fetch(query: $query, role: $role, isInstructorVerified: $isInstructorVerified)';
+  return 'UserListEvent.fetch(query: $query, role: $role, isInstructorVerified: $isInstructorVerified, sort: $sort)';
 }
 
 
@@ -242,7 +251,7 @@ abstract mixin class $FetchUsersCopyWith<$Res> implements $UserListEventCopyWith
   factory $FetchUsersCopyWith(FetchUsers value, $Res Function(FetchUsers) _then) = _$FetchUsersCopyWithImpl;
 @useResult
 $Res call({
- String? query, String? role, bool? isInstructorVerified
+ String? query, String? role, bool? isInstructorVerified, Map<String, String>? sort
 });
 
 
@@ -259,12 +268,13 @@ class _$FetchUsersCopyWithImpl<$Res>
 
 /// Create a copy of UserListEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? query = freezed,Object? role = freezed,Object? isInstructorVerified = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? query = freezed,Object? role = freezed,Object? isInstructorVerified = freezed,Object? sort = freezed,}) {
   return _then(FetchUsers(
 query: freezed == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
 as String?,isInstructorVerified: freezed == isInstructorVerified ? _self.isInstructorVerified : isInstructorVerified // ignore: cast_nullable_to_non_nullable
-as bool?,
+as bool?,sort: freezed == sort ? _self._sort : sort // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,
   ));
 }
 

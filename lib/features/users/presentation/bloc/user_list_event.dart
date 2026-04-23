@@ -8,6 +8,7 @@ class UserListEvent with _$UserListEvent {
     String? query,
     String? role,
     bool? isInstructorVerified,
+    Map<String, String>? sort,
   }) = FetchUsers;
   const factory UserListEvent.loadMore() = LoadMoreUsers;
   const factory UserListEvent.banUser({required String id, required String reason}) = BanUser;

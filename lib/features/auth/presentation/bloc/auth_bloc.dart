@@ -80,6 +80,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             (_) => emit(const AuthState.passwordResetSuccess()),
           );
         },
+        userUpdated: (e) async {
+          emit(AuthState.authenticated(user: e.user));
+        },
       );
     });
   }

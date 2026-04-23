@@ -14,6 +14,7 @@ sealed class UserListState with _$UserListState {
     String? currentQuery,
     String? currentRole,
     bool? currentIsInstructorVerified,
+    Map<String, String>? currentSort,
     String? errorMessage,
     @Default(false) bool isActionLoading,
     String? actionErrorMessage,

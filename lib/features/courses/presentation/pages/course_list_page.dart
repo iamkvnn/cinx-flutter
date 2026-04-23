@@ -12,6 +12,9 @@ import '../../data/models/course_response.dart';
 import '../bloc/course_list_bloc.dart';
 import '../bloc/course_list_event.dart';
 import '../bloc/course_list_state.dart';
+import '../../../categories/presentation/bloc/category_list_bloc.dart';
+import '../../../categories/presentation/bloc/category_list_event.dart';
+import '../../../categories/presentation/bloc/category_list_state.dart';
 
 /// Admin course list page with filters and infinite scroll.
 class CourseListPage extends StatelessWidget {
@@ -19,9 +22,17 @@ class CourseListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<CourseListBloc>()
-        ..add(const CourseListEvent.fetchCourses(sort: {'createdAt': 'DESC'})),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<CourseListBloc>()
+            ..add(const CourseListEvent.fetchCourses(sort: {'createdAt': 'DESC'})),
+        ),
+        BlocProvider(
+          create: (context) => getIt<CategoryListBloc>()
+            ..add(const CategoryListEvent.fetch()),
+        ),
+      ],
       child: const _CourseListView(),
     );
   }
@@ -39,6 +50,7 @@ class _CourseListViewState extends State<_CourseListView> {
   Timer? _debounce;
 
   String? _selectedStatus;
+  String? _selectedCategoryId;
   String _sortField = 'createdAt';
   String _sortDirection = 'DESC';
 
@@ -72,12 +84,15 @@ class _CourseListViewState extends State<_CourseListView> {
             ? null
             : _searchController.text.trim(),
         status: _selectedStatus,
+        categoryId: _selectedCategoryId,
         sort: {_sortField: _sortDirection},
       ),
     );
   }
 
   void _showFilterSortBottomSheet() {
+    final categoryBloc = context.read<CategoryListBloc>();
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -87,135 +102,180 @@ class _CourseListViewState extends State<_CourseListView> {
         ),
       ),
       builder: (BuildContext sheetContext) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setSheetState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
-                left: AppSizes.p24,
-                right: AppSizes.p24,
-                top: AppSizes.p24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Filter & Sort',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(sheetContext),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: AppSizes.p16),
-
-                  // Status Filter
-                  Text(
-                    'Status',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSizes.p8),
-                  Wrap(
-                    spacing: AppSizes.p8,
-                    runSpacing: AppSizes.p8,
-                    children: _statusOptions.map((status) {
-                      final isSelected = _selectedStatus == status;
-                      return FilterChip(
-                        label: Text(status ?? 'All'),
-                        selected: isSelected,
-                        onSelected: (bool selected) {
-                          setSheetState(() {
-                            _selectedStatus = selected ? status : null;
-                          });
-                        },
-                        selectedColor: AppTheme.primaryColor.withValues(
-                          alpha: 0.2,
+        return BlocProvider.value(
+          value: categoryBloc,
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setSheetState) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+                  left: AppSizes.p24,
+                  right: AppSizes.p24,
+                  top: AppSizes.p24,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Filter & Sort',
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        checkmarkColor: AppTheme.primaryColor,
-                      );
-                    }).toList(),
-                  ),
-
-                  const SizedBox(height: AppSizes.p24),
-
-                  // Sort Field
-                  Text(
-                    'Sort By',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSizes.p8),
-                  DropdownButtonFormField<String>(
-                    initialValue: _sortField,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(sheetContext),
+                        ),
+                      ],
                     ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'createdAt',
-                        child: Text('Created Date'),
-                      ),
-                      DropdownMenuItem(value: 'title', child: Text('Title')),
-                      DropdownMenuItem(value: 'status', child: Text('Status')),
-                    ],
-                    onChanged: (String? newValue) {
-                      if (newValue != null) {
-                        setSheetState(() {
-                          _sortField = newValue;
-                        });
-                      }
-                    },
-                  ),
+                    const SizedBox(height: AppSizes.p16),
 
-                  const SizedBox(height: AppSizes.p16),
+                    // Status Filter
+                    Text(
+                      'Status',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: AppSizes.p8),
+                    Wrap(
+                      spacing: AppSizes.p8,
+                      runSpacing: AppSizes.p8,
+                      children: _statusOptions.map((status) {
+                        final isSelected = _selectedStatus == status;
+                        return FilterChip(
+                          label: Text(status ?? 'All'),
+                          selected: isSelected,
+                          onSelected: (bool selected) {
+                            setSheetState(() {
+                              _selectedStatus = selected ? status : null;
+                            });
+                          },
+                          selectedColor: AppTheme.primaryColor.withValues(
+                            alpha: 0.2,
+                          ),
+                          checkmarkColor: AppTheme.primaryColor,
+                        );
+                      }).toList(),
+                    ),
 
-                  // Sort Direction
-                  Text(
-                    'Direction',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSizes.p8),
-                  SegmentedButton<String>(
-                    segments: const [
-                      ButtonSegment<String>(
-                        value: 'ASC',
-                        label: Text('Ascending'),
-                      ),
-                      ButtonSegment<String>(
-                        value: 'DESC',
-                        label: Text('Descending'),
-                      ),
-                    ],
-                    selected: {_sortDirection},
-                    onSelectionChanged: (Set<String> newSelection) {
-                      setSheetState(() {
-                        _sortDirection = newSelection.first;
-                      });
-                    },
-                  ),
+                    const SizedBox(height: AppSizes.p24),
 
-                  const SizedBox(height: AppSizes.p32),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(sheetContext);
-                        _applyFilterAndSort();
+                    // Category Filter
+                    Text(
+                      'Category',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: AppSizes.p8),
+                    BlocBuilder<CategoryListBloc, CategoryListState>(
+                      builder: (context, categoryState) {
+                        if (categoryState.isLoading && categoryState.categories.isEmpty) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        
+                        final categories = categoryState.categories;
+                        return DropdownButtonFormField<String?>(
+                          initialValue: _selectedCategoryId,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'All Categories',
+                          ),
+                          items: [
+                            const DropdownMenuItem<String?>(
+                              value: null,
+                              child: Text('All'),
+                            ),
+                            ...categories.map((category) {
+                              return DropdownMenuItem<String?>(
+                                value: category.id,
+                                child: Text(category.name ?? 'Unknown'),
+                              );
+                            }),
+                          ],
+                          onChanged: (String? newValue) {
+                            setSheetState(() {
+                              _selectedCategoryId = newValue;
+                            });
+                          },
+                        );
                       },
-                      child: const Text('Apply'),
                     ),
-                  ),
-                  const SizedBox(height: AppSizes.p24),
-                ],
-              ),
-            );
-          },
+
+                    const SizedBox(height: AppSizes.p24),
+
+                    // Sort Field
+                    Text(
+                      'Sort By',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: AppSizes.p8),
+                    DropdownButtonFormField<String>(
+                      initialValue: _sortField,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'createdAt',
+                          child: Text('Created Date'),
+                        ),
+                        DropdownMenuItem(value: 'title', child: Text('Title')),
+                        DropdownMenuItem(value: 'status', child: Text('Status')),
+                      ],
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setSheetState(() {
+                            _sortField = newValue;
+                          });
+                        }
+                      },
+                    ),
+
+                    const SizedBox(height: AppSizes.p16),
+
+                    // Sort Direction
+                    Text(
+                      'Direction',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: AppSizes.p8),
+                    SegmentedButton<String>(
+                      segments: const [
+                        ButtonSegment<String>(
+                          value: 'ASC',
+                          label: Text('Ascending'),
+                        ),
+                        ButtonSegment<String>(
+                          value: 'DESC',
+                          label: Text('Descending'),
+                        ),
+                      ],
+                      selected: {_sortDirection},
+                      onSelectionChanged: (Set<String> newSelection) {
+                        setSheetState(() {
+                          _sortDirection = newSelection.first;
+                        });
+                      },
+                    ),
+
+                    const SizedBox(height: AppSizes.p32),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(sheetContext);
+                          _applyFilterAndSort();
+                        },
+                        child: const Text('Apply'),
+                      ),
+                    ),
+                    const SizedBox(height: AppSizes.p24),
+                  ],
+                ),
+              );
+            },
+          ),
         );
       },
     );

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'dart:convert';
 import '../../domain/usecases/get_users_usecase.dart';
 import '../../domain/usecases/ban_user_usecase.dart';
 import '../../domain/usecases/unban_user_usecase.dart';
@@ -50,6 +51,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       currentQuery: event.query ?? state.currentQuery,
       currentRole: event.role ?? state.currentRole,
       currentIsInstructorVerified: event.isInstructorVerified,
+      currentSort: event.sort ?? state.currentSort,
     ));
 
     final result = await _getUsers(
@@ -58,6 +60,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       query: state.currentQuery,
       role: state.currentRole,
       isInstructorVerified: state.currentIsInstructorVerified,
+      sort: state.currentSort != null ? jsonEncode(state.currentSort) : null,
     );
 
     result.fold(
@@ -94,6 +97,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       query: state.currentQuery,
       role: state.currentRole,
       isInstructorVerified: state.currentIsInstructorVerified,
+      sort: state.currentSort != null ? jsonEncode(state.currentSort) : null,
     );
 
     result.fold(

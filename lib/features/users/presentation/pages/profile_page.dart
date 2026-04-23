@@ -49,6 +49,7 @@ class _ProfileViewState extends State<_ProfileView> {
     if (_currentUser == null) {
       _nameController.text = user.name ?? '';
       _gender = user.gender ?? 'MALE';
+      _isReceivePushNotification = user.isReceivePushNotification ?? true;
     }
     _currentUser = user;
   }
@@ -98,7 +99,10 @@ class _ProfileViewState extends State<_ProfileView> {
       child: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
           state.mapOrNull(
-            loaded: (s) => _onUserLoaded(s.user),
+            loaded: (s) {
+              _onUserLoaded(s.user);
+              context.read<AuthBloc>().add(AuthEvent.userUpdated(s.user));
+            },
             updateSuccess: (_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Profile updated successfully')),
