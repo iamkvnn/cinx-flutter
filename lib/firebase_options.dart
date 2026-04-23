@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'cinx-d9301.firebasestorage.app',
     measurementId: 'G-SWQWX5HQXL',
   );
+
 }

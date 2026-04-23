@@ -48,7 +48,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
       users: [],
       currentPage: 1,
       hasReachedMax: false,
-      currentQuery: event.query ?? state.currentQuery,
+      currentQuery: event.query,
       currentRole: event.role ?? state.currentRole,
       currentIsInstructorVerified: event.isInstructorVerified,
       currentSort: event.sort ?? state.currentSort,
