@@ -51,4 +51,15 @@ class VoucherRepositoryImpl implements VoucherRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> updateVoucher(String id, CreateVoucherRequest request) async {
+    try {
+      final response = await _dataSource.updateVoucher(id, request);
+      if (response.success) return const Right(null);
+      return Left(ServerFailure(response.message));
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

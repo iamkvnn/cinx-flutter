@@ -32,6 +32,20 @@ import 'package:cinx/features/auth/domain/usecases/reset_password_usecase.dart'
 import 'package:cinx/features/auth/domain/usecases/send_change_password_otp_usecase.dart'
     as _i946;
 import 'package:cinx/features/auth/presentation/bloc/auth_bloc.dart' as _i1013;
+import 'package:cinx/features/categories/data/datasources/category_remote_data_source.dart'
+    as _i250;
+import 'package:cinx/features/categories/data/repositories/category_repository_impl.dart'
+    as _i958;
+import 'package:cinx/features/categories/domain/repositories/category_repository.dart'
+    as _i544;
+import 'package:cinx/features/categories/domain/usecases/create_category_usecase.dart'
+    as _i902;
+import 'package:cinx/features/categories/domain/usecases/get_categories_usecase.dart'
+    as _i1;
+import 'package:cinx/features/categories/domain/usecases/update_category_usecase.dart'
+    as _i483;
+import 'package:cinx/features/categories/presentation/bloc/category_list_bloc.dart'
+    as _i734;
 import 'package:cinx/features/courses/data/datasources/course_remote_data_source.dart'
     as _i549;
 import 'package:cinx/features/courses/data/repositories/course_repository_impl.dart'
@@ -78,16 +92,24 @@ import 'package:cinx/features/users/data/repositories/user_repository_impl.dart'
     as _i694;
 import 'package:cinx/features/users/domain/repositories/user_repository.dart'
     as _i259;
+import 'package:cinx/features/users/domain/usecases/ban_user_usecase.dart'
+    as _i632;
 import 'package:cinx/features/users/domain/usecases/get_current_user_usecase.dart'
     as _i1047;
 import 'package:cinx/features/users/domain/usecases/get_presigned_url_usecase.dart'
     as _i84;
 import 'package:cinx/features/users/domain/usecases/get_users_usecase.dart'
     as _i944;
+import 'package:cinx/features/users/domain/usecases/reject_instructor_usecase.dart'
+    as _i224;
+import 'package:cinx/features/users/domain/usecases/unban_user_usecase.dart'
+    as _i913;
 import 'package:cinx/features/users/domain/usecases/update_user_usecase.dart'
     as _i376;
 import 'package:cinx/features/users/domain/usecases/upload_file_to_presigned_url_usecase.dart'
     as _i593;
+import 'package:cinx/features/users/domain/usecases/verify_instructor_usecase.dart'
+    as _i828;
 import 'package:cinx/features/users/presentation/bloc/profile/profile_bloc.dart'
     as _i246;
 import 'package:cinx/features/users/presentation/bloc/user_list_bloc.dart'
@@ -104,6 +126,8 @@ import 'package:cinx/features/vouchers/domain/usecases/delete_voucher_usecase.da
     as _i1064;
 import 'package:cinx/features/vouchers/domain/usecases/get_vouchers_usecase.dart'
     as _i629;
+import 'package:cinx/features/vouchers/domain/usecases/update_voucher_usecase.dart'
+    as _i765;
 import 'package:cinx/features/vouchers/presentation/bloc/voucher_list_bloc.dart'
     as _i386;
 import 'package:dio/dio.dart' as _i361;
@@ -118,7 +142,6 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final networkModule = _$NetworkModule();
-    gh.lazySingleton<_i599.AppRouter>(() => _i599.AppRouter());
     gh.lazySingleton<_i354.TokenStorage>(() => _i354.TokenStorage());
     gh.lazySingleton<_i361.BaseOptions>(
       () => networkModule.options,
@@ -152,6 +175,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i975.AuthRepositoryImpl(
         gh<_i773.AuthRemoteDataSource>(),
         gh<_i354.TokenStorage>(),
+      ),
+    );
+    gh.factory<_i250.CategoryRemoteDataSource>(
+      () => _i250.CategoryRemoteDataSource(
+        gh<_i361.Dio>(instanceName: 'authenticatedDio'),
       ),
     );
     gh.factory<_i549.CourseRemoteDataSource>(
@@ -202,15 +230,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1033.NotificationRemoteDataSource>(),
       ),
     );
-    gh.factory<_i1013.AuthBloc>(
-      () => _i1013.AuthBloc(
-        gh<_i1048.LoginUseCase>(),
-        gh<_i725.LogoutUseCase>(),
-        gh<_i330.CheckAuthUseCase>(),
-        gh<_i946.SendChangePasswordOtpUseCase>(),
-        gh<_i465.ResetPasswordUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i259.UserRepository>(
       () => _i694.UserRepositoryImpl(
         gh<_i368.UserRemoteDataSource>(),
@@ -233,11 +252,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i822.RejectCourseUseCase>(
       () => _i822.RejectCourseUseCase(gh<_i1028.CourseRepository>()),
     );
+    gh.lazySingleton<_i632.BanUserUseCase>(
+      () => _i632.BanUserUseCase(gh<_i259.UserRepository>()),
+    );
     gh.lazySingleton<_i1047.GetCurrentUserUseCase>(
       () => _i1047.GetCurrentUserUseCase(gh<_i259.UserRepository>()),
     );
     gh.lazySingleton<_i84.GetPresignedUrlUseCase>(
       () => _i84.GetPresignedUrlUseCase(gh<_i259.UserRepository>()),
+    );
+    gh.lazySingleton<_i224.RejectInstructorUseCase>(
+      () => _i224.RejectInstructorUseCase(gh<_i259.UserRepository>()),
+    );
+    gh.lazySingleton<_i913.UnbanUserUseCase>(
+      () => _i913.UnbanUserUseCase(gh<_i259.UserRepository>()),
     );
     gh.lazySingleton<_i376.UpdateUserUseCase>(
       () => _i376.UpdateUserUseCase(gh<_i259.UserRepository>()),
@@ -245,18 +273,27 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i593.UploadFileToPresignedUrlUseCase>(
       () => _i593.UploadFileToPresignedUrlUseCase(gh<_i259.UserRepository>()),
     );
+    gh.lazySingleton<_i828.VerifyInstructorUseCase>(
+      () => _i828.VerifyInstructorUseCase(gh<_i259.UserRepository>()),
+    );
+    gh.lazySingleton<_i1013.AuthBloc>(
+      () => _i1013.AuthBloc(
+        gh<_i1048.LoginUseCase>(),
+        gh<_i725.LogoutUseCase>(),
+        gh<_i330.CheckAuthUseCase>(),
+        gh<_i946.SendChangePasswordOtpUseCase>(),
+        gh<_i465.ResetPasswordUseCase>(),
+        gh<_i1047.GetCurrentUserUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i544.CategoryRepository>(
+      () => _i958.CategoryRepositoryImpl(gh<_i250.CategoryRemoteDataSource>()),
+    );
     gh.lazySingleton<_i86.VoucherRepository>(
       () => _i873.VoucherRepositoryImpl(gh<_i759.VoucherRemoteDataSource>()),
     );
-    gh.factory<_i246.ProfileBloc>(
-      () => _i246.ProfileBloc(
-        gh<_i1047.GetCurrentUserUseCase>(),
-        gh<_i376.UpdateUserUseCase>(),
-        gh<_i84.GetPresignedUrlUseCase>(),
-        gh<_i593.UploadFileToPresignedUrlUseCase>(),
-        gh<_i946.SendChangePasswordOtpUseCase>(),
-        gh<_i584.ChangePasswordUseCase>(),
-      ),
+    gh.lazySingleton<_i599.AppRouter>(
+      () => _i599.AppRouter(gh<_i1013.AuthBloc>()),
     );
     gh.lazySingleton<_i944.GetUsersUseCase>(
       () => _i944.GetUsersUseCase(gh<_i259.UserRepository>()),
@@ -270,8 +307,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i629.GetVouchersUseCase>(
       () => _i629.GetVouchersUseCase(gh<_i86.VoucherRepository>()),
     );
+    gh.lazySingleton<_i765.UpdateVoucherUseCase>(
+      () => _i765.UpdateVoucherUseCase(gh<_i86.VoucherRepository>()),
+    );
     gh.lazySingleton<_i846.GetDashboardMetricsUseCase>(
       () => _i846.GetDashboardMetricsUseCase(gh<_i222.DashboardRepository>()),
+    );
+    gh.factory<_i244.UserListBloc>(
+      () => _i244.UserListBloc(
+        gh<_i944.GetUsersUseCase>(),
+        gh<_i632.BanUserUseCase>(),
+        gh<_i913.UnbanUserUseCase>(),
+        gh<_i828.VerifyInstructorUseCase>(),
+        gh<_i224.RejectInstructorUseCase>(),
+      ),
     );
     gh.lazySingleton<_i943.GetNotificationsUseCase>(
       () => _i943.GetNotificationsUseCase(gh<_i27.NotificationRepository>()),
@@ -286,6 +335,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i27.NotificationRepository>(),
       ),
     );
+    gh.factory<_i246.ProfileBloc>(
+      () => _i246.ProfileBloc(
+        gh<_i1047.GetCurrentUserUseCase>(),
+        gh<_i376.UpdateUserUseCase>(),
+        gh<_i84.GetPresignedUrlUseCase>(),
+        gh<_i593.UploadFileToPresignedUrlUseCase>(),
+        gh<_i584.ChangePasswordUseCase>(),
+      ),
+    );
     gh.factory<_i723.CourseListBloc>(
       () => _i723.CourseListBloc(gh<_i171.GetCoursesUseCase>()),
     );
@@ -293,8 +351,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i386.VoucherListBloc(
         gh<_i629.GetVouchersUseCase>(),
         gh<_i721.CreateVoucherUseCase>(),
+        gh<_i765.UpdateVoucherUseCase>(),
         gh<_i1064.DeleteVoucherUseCase>(),
       ),
+    );
+    gh.lazySingleton<_i902.CreateCategoryUseCase>(
+      () => _i902.CreateCategoryUseCase(gh<_i544.CategoryRepository>()),
+    );
+    gh.lazySingleton<_i1.GetCategoriesUseCase>(
+      () => _i1.GetCategoriesUseCase(gh<_i544.CategoryRepository>()),
+    );
+    gh.lazySingleton<_i483.UpdateCategoryUseCase>(
+      () => _i483.UpdateCategoryUseCase(gh<_i544.CategoryRepository>()),
     );
     gh.factory<_i96.CourseDetailBloc>(
       () => _i96.CourseDetailBloc(
@@ -302,9 +370,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i323.ApproveCourseUseCase>(),
         gh<_i822.RejectCourseUseCase>(),
       ),
-    );
-    gh.factory<_i244.UserListBloc>(
-      () => _i244.UserListBloc(gh<_i944.GetUsersUseCase>()),
     );
     gh.factory<_i1067.DashboardBloc>(
       () => _i1067.DashboardBloc(gh<_i846.GetDashboardMetricsUseCase>()),
@@ -314,6 +379,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i943.GetNotificationsUseCase>(),
         gh<_i583.GetUnreadNotificationCountUseCase>(),
         gh<_i614.ToggleNotificationReadUseCase>(),
+      ),
+    );
+    gh.factory<_i734.CategoryListBloc>(
+      () => _i734.CategoryListBloc(
+        gh<_i1.GetCategoriesUseCase>(),
+        gh<_i902.CreateCategoryUseCase>(),
+        gh<_i483.UpdateCategoryUseCase>(),
       ),
     );
     return this;

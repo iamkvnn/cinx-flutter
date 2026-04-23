@@ -8,5 +8,6 @@ class VoucherListEvent with _$VoucherListEvent {
   const factory VoucherListEvent.fetch({String? query}) = FetchVouchers;
   const factory VoucherListEvent.loadMore() = LoadMoreVouchers;
   const factory VoucherListEvent.create(CreateVoucherRequest request) = CreateVoucher;
+  const factory VoucherListEvent.update(String id, CreateVoucherRequest request) = UpdateVoucher;
   const factory VoucherListEvent.delete(String id) = DeleteVoucher;
 }

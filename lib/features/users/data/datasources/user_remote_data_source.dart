@@ -20,6 +20,8 @@ abstract class UserRemoteDataSource {
     @Query('size') int? size,
     @Query('query') String? query,
     @Query('sort') String? sort,
+    @Query('role') String? role,
+    @Query('isInstructorVerified') bool? isInstructorVerified,
   });
 
   @GET('/api/v1/users/me')
@@ -35,5 +37,23 @@ abstract class UserRemoteDataSource {
   Future<ApiResponse<Map<String, dynamic>>> getPresignedUrl(
     @Query('fileName') String fileName,
     @Query('contentType') String contentType,
+  );
+
+  @POST('/api/v1/auth/{id}/ban')
+  Future<ApiResponse<void>> banUser(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @POST('/api/v1/auth/{id}/unban')
+  Future<ApiResponse<void>> unbanUser(@Path('id') String id);
+
+  @POST('/api/v1/users/{id}/verify-instructor')
+  Future<ApiResponse<void>> verifyInstructor(@Path('id') String id);
+
+  @POST('/api/v1/users/{id}/reject-instructor')
+  Future<ApiResponse<void>> rejectInstructor(
+    @Path('id') String id,
+    @Query('reason') String reason,
   );
 }

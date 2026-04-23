@@ -16,7 +16,14 @@ class GetUsersUseCase {
     int? size,
     String? query,
     String? sort,
-  }) =>
-      _repository.getUsers(
-          page: page, size: size, query: query, sort: sort);
+    String? role,
+    bool? isInstructorVerified,
+  }) => _repository.getUsers(
+    page: page,
+    size: size,
+    query: query,
+    sort: sort,
+    role: role,
+    isInstructorVerified: isInstructorVerified,
+  );
 }

@@ -27,7 +27,6 @@ _CourseResponse _$CourseResponseFromJson(Map<String, dynamic> json) =>
       discountRate: (json['discountRate'] as num?)?.toInt(),
       rating: (json['rating'] as num?)?.toDouble(),
       enrollmentCount: (json['enrollmentCount'] as num?)?.toInt(),
-      isPublished: json['isPublished'] as bool?,
       isInSubscription: json['isInSubscription'] as bool?,
       duration: (json['duration'] as num?)?.toInt(),
       hasCertificate: json['hasCertificate'] as bool?,
@@ -35,6 +34,9 @@ _CourseResponse _$CourseResponseFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
+      sections: (json['sections'] as List<dynamic>?)
+          ?.map((e) => SectionResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$CourseResponseToJson(_CourseResponse instance) =>
@@ -50,7 +52,6 @@ Map<String, dynamic> _$CourseResponseToJson(_CourseResponse instance) =>
       'discountRate': instance.discountRate,
       'rating': instance.rating,
       'enrollmentCount': instance.enrollmentCount,
-      'isPublished': instance.isPublished,
       'isInSubscription': instance.isInSubscription,
       'duration': instance.duration,
       'hasCertificate': instance.hasCertificate,
@@ -58,4 +59,5 @@ Map<String, dynamic> _$CourseResponseToJson(_CourseResponse instance) =>
       'status': instance.status,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
+      'sections': instance.sections,
     };

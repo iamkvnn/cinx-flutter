@@ -55,12 +55,16 @@ extension UserListEventPatterns on UserListEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( FetchUsers value)?  fetch,TResult Function( LoadMoreUsers value)?  loadMore,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( FetchUsers value)?  fetch,TResult Function( LoadMoreUsers value)?  loadMore,TResult Function( BanUser value)?  banUser,TResult Function( UnbanUser value)?  unbanUser,TResult Function( VerifyInstructor value)?  verifyInstructor,TResult Function( RejectInstructor value)?  rejectInstructor,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case FetchUsers() when fetch != null:
 return fetch(_that);case LoadMoreUsers() when loadMore != null:
-return loadMore(_that);case _:
+return loadMore(_that);case BanUser() when banUser != null:
+return banUser(_that);case UnbanUser() when unbanUser != null:
+return unbanUser(_that);case VerifyInstructor() when verifyInstructor != null:
+return verifyInstructor(_that);case RejectInstructor() when rejectInstructor != null:
+return rejectInstructor(_that);case _:
   return orElse();
 
 }
@@ -78,12 +82,16 @@ return loadMore(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( FetchUsers value)  fetch,required TResult Function( LoadMoreUsers value)  loadMore,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( FetchUsers value)  fetch,required TResult Function( LoadMoreUsers value)  loadMore,required TResult Function( BanUser value)  banUser,required TResult Function( UnbanUser value)  unbanUser,required TResult Function( VerifyInstructor value)  verifyInstructor,required TResult Function( RejectInstructor value)  rejectInstructor,}){
 final _that = this;
 switch (_that) {
 case FetchUsers():
 return fetch(_that);case LoadMoreUsers():
-return loadMore(_that);case _:
+return loadMore(_that);case BanUser():
+return banUser(_that);case UnbanUser():
+return unbanUser(_that);case VerifyInstructor():
+return verifyInstructor(_that);case RejectInstructor():
+return rejectInstructor(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +108,16 @@ return loadMore(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( FetchUsers value)?  fetch,TResult? Function( LoadMoreUsers value)?  loadMore,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( FetchUsers value)?  fetch,TResult? Function( LoadMoreUsers value)?  loadMore,TResult? Function( BanUser value)?  banUser,TResult? Function( UnbanUser value)?  unbanUser,TResult? Function( VerifyInstructor value)?  verifyInstructor,TResult? Function( RejectInstructor value)?  rejectInstructor,}){
 final _that = this;
 switch (_that) {
 case FetchUsers() when fetch != null:
 return fetch(_that);case LoadMoreUsers() when loadMore != null:
-return loadMore(_that);case _:
+return loadMore(_that);case BanUser() when banUser != null:
+return banUser(_that);case UnbanUser() when unbanUser != null:
+return unbanUser(_that);case VerifyInstructor() when verifyInstructor != null:
+return verifyInstructor(_that);case RejectInstructor() when rejectInstructor != null:
+return rejectInstructor(_that);case _:
   return null;
 
 }
@@ -122,11 +134,15 @@ return loadMore(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query)?  fetch,TResult Function()?  loadMore,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query,  String? role,  bool? isInstructorVerified)?  fetch,TResult Function()?  loadMore,TResult Function( String id,  String reason)?  banUser,TResult Function( String id)?  unbanUser,TResult Function( String id)?  verifyInstructor,TResult Function( String id,  String reason)?  rejectInstructor,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case FetchUsers() when fetch != null:
-return fetch(_that.query);case LoadMoreUsers() when loadMore != null:
-return loadMore();case _:
+return fetch(_that.query,_that.role,_that.isInstructorVerified);case LoadMoreUsers() when loadMore != null:
+return loadMore();case BanUser() when banUser != null:
+return banUser(_that.id,_that.reason);case UnbanUser() when unbanUser != null:
+return unbanUser(_that.id);case VerifyInstructor() when verifyInstructor != null:
+return verifyInstructor(_that.id);case RejectInstructor() when rejectInstructor != null:
+return rejectInstructor(_that.id,_that.reason);case _:
   return orElse();
 
 }
@@ -144,11 +160,15 @@ return loadMore();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query)  fetch,required TResult Function()  loadMore,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query,  String? role,  bool? isInstructorVerified)  fetch,required TResult Function()  loadMore,required TResult Function( String id,  String reason)  banUser,required TResult Function( String id)  unbanUser,required TResult Function( String id)  verifyInstructor,required TResult Function( String id,  String reason)  rejectInstructor,}) {final _that = this;
 switch (_that) {
 case FetchUsers():
-return fetch(_that.query);case LoadMoreUsers():
-return loadMore();case _:
+return fetch(_that.query,_that.role,_that.isInstructorVerified);case LoadMoreUsers():
+return loadMore();case BanUser():
+return banUser(_that.id,_that.reason);case UnbanUser():
+return unbanUser(_that.id);case VerifyInstructor():
+return verifyInstructor(_that.id);case RejectInstructor():
+return rejectInstructor(_that.id,_that.reason);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +185,15 @@ return loadMore();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query)?  fetch,TResult? Function()?  loadMore,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query,  String? role,  bool? isInstructorVerified)?  fetch,TResult? Function()?  loadMore,TResult? Function( String id,  String reason)?  banUser,TResult? Function( String id)?  unbanUser,TResult? Function( String id)?  verifyInstructor,TResult? Function( String id,  String reason)?  rejectInstructor,}) {final _that = this;
 switch (_that) {
 case FetchUsers() when fetch != null:
-return fetch(_that.query);case LoadMoreUsers() when loadMore != null:
-return loadMore();case _:
+return fetch(_that.query,_that.role,_that.isInstructorVerified);case LoadMoreUsers() when loadMore != null:
+return loadMore();case BanUser() when banUser != null:
+return banUser(_that.id,_that.reason);case UnbanUser() when unbanUser != null:
+return unbanUser(_that.id);case VerifyInstructor() when verifyInstructor != null:
+return verifyInstructor(_that.id);case RejectInstructor() when rejectInstructor != null:
+return rejectInstructor(_that.id,_that.reason);case _:
   return null;
 
 }
@@ -181,10 +205,12 @@ return loadMore();case _:
 
 
 class FetchUsers implements UserListEvent {
-  const FetchUsers({this.query});
+  const FetchUsers({this.query, this.role, this.isInstructorVerified});
   
 
  final  String? query;
+ final  String? role;
+ final  bool? isInstructorVerified;
 
 /// Create a copy of UserListEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -196,16 +222,16 @@ $FetchUsersCopyWith<FetchUsers> get copyWith => _$FetchUsersCopyWithImpl<FetchUs
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FetchUsers&&(identical(other.query, query) || other.query == query));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FetchUsers&&(identical(other.query, query) || other.query == query)&&(identical(other.role, role) || other.role == role)&&(identical(other.isInstructorVerified, isInstructorVerified) || other.isInstructorVerified == isInstructorVerified));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode => Object.hash(runtimeType,query,role,isInstructorVerified);
 
 @override
 String toString() {
-  return 'UserListEvent.fetch(query: $query)';
+  return 'UserListEvent.fetch(query: $query, role: $role, isInstructorVerified: $isInstructorVerified)';
 }
 
 
@@ -216,7 +242,7 @@ abstract mixin class $FetchUsersCopyWith<$Res> implements $UserListEventCopyWith
   factory $FetchUsersCopyWith(FetchUsers value, $Res Function(FetchUsers) _then) = _$FetchUsersCopyWithImpl;
 @useResult
 $Res call({
- String? query
+ String? query, String? role, bool? isInstructorVerified
 });
 
 
@@ -233,10 +259,12 @@ class _$FetchUsersCopyWithImpl<$Res>
 
 /// Create a copy of UserListEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? query = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? query = freezed,Object? role = freezed,Object? isInstructorVerified = freezed,}) {
   return _then(FetchUsers(
 query: freezed == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,role: freezed == role ? _self.role : role // ignore: cast_nullable_to_non_nullable
+as String?,isInstructorVerified: freezed == isInstructorVerified ? _self.isInstructorVerified : isInstructorVerified // ignore: cast_nullable_to_non_nullable
+as bool?,
   ));
 }
 
@@ -274,5 +302,273 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class BanUser implements UserListEvent {
+  const BanUser({required this.id, required this.reason});
+  
+
+ final  String id;
+ final  String reason;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BanUserCopyWith<BanUser> get copyWith => _$BanUserCopyWithImpl<BanUser>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BanUser&&(identical(other.id, id) || other.id == id)&&(identical(other.reason, reason) || other.reason == reason));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,reason);
+
+@override
+String toString() {
+  return 'UserListEvent.banUser(id: $id, reason: $reason)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BanUserCopyWith<$Res> implements $UserListEventCopyWith<$Res> {
+  factory $BanUserCopyWith(BanUser value, $Res Function(BanUser) _then) = _$BanUserCopyWithImpl;
+@useResult
+$Res call({
+ String id, String reason
+});
+
+
+
+
+}
+/// @nodoc
+class _$BanUserCopyWithImpl<$Res>
+    implements $BanUserCopyWith<$Res> {
+  _$BanUserCopyWithImpl(this._self, this._then);
+
+  final BanUser _self;
+  final $Res Function(BanUser) _then;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? reason = null,}) {
+  return _then(BanUser(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UnbanUser implements UserListEvent {
+  const UnbanUser({required this.id});
+  
+
+ final  String id;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UnbanUserCopyWith<UnbanUser> get copyWith => _$UnbanUserCopyWithImpl<UnbanUser>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnbanUser&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'UserListEvent.unbanUser(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UnbanUserCopyWith<$Res> implements $UserListEventCopyWith<$Res> {
+  factory $UnbanUserCopyWith(UnbanUser value, $Res Function(UnbanUser) _then) = _$UnbanUserCopyWithImpl;
+@useResult
+$Res call({
+ String id
+});
+
+
+
+
+}
+/// @nodoc
+class _$UnbanUserCopyWithImpl<$Res>
+    implements $UnbanUserCopyWith<$Res> {
+  _$UnbanUserCopyWithImpl(this._self, this._then);
+
+  final UnbanUser _self;
+  final $Res Function(UnbanUser) _then;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(UnbanUser(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class VerifyInstructor implements UserListEvent {
+  const VerifyInstructor({required this.id});
+  
+
+ final  String id;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VerifyInstructorCopyWith<VerifyInstructor> get copyWith => _$VerifyInstructorCopyWithImpl<VerifyInstructor>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyInstructor&&(identical(other.id, id) || other.id == id));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id);
+
+@override
+String toString() {
+  return 'UserListEvent.verifyInstructor(id: $id)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $VerifyInstructorCopyWith<$Res> implements $UserListEventCopyWith<$Res> {
+  factory $VerifyInstructorCopyWith(VerifyInstructor value, $Res Function(VerifyInstructor) _then) = _$VerifyInstructorCopyWithImpl;
+@useResult
+$Res call({
+ String id
+});
+
+
+
+
+}
+/// @nodoc
+class _$VerifyInstructorCopyWithImpl<$Res>
+    implements $VerifyInstructorCopyWith<$Res> {
+  _$VerifyInstructorCopyWithImpl(this._self, this._then);
+
+  final VerifyInstructor _self;
+  final $Res Function(VerifyInstructor) _then;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(VerifyInstructor(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class RejectInstructor implements UserListEvent {
+  const RejectInstructor({required this.id, required this.reason});
+  
+
+ final  String id;
+ final  String reason;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RejectInstructorCopyWith<RejectInstructor> get copyWith => _$RejectInstructorCopyWithImpl<RejectInstructor>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RejectInstructor&&(identical(other.id, id) || other.id == id)&&(identical(other.reason, reason) || other.reason == reason));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,reason);
+
+@override
+String toString() {
+  return 'UserListEvent.rejectInstructor(id: $id, reason: $reason)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RejectInstructorCopyWith<$Res> implements $UserListEventCopyWith<$Res> {
+  factory $RejectInstructorCopyWith(RejectInstructor value, $Res Function(RejectInstructor) _then) = _$RejectInstructorCopyWithImpl;
+@useResult
+$Res call({
+ String id, String reason
+});
+
+
+
+
+}
+/// @nodoc
+class _$RejectInstructorCopyWithImpl<$Res>
+    implements $RejectInstructorCopyWith<$Res> {
+  _$RejectInstructorCopyWithImpl(this._self, this._then);
+
+  final RejectInstructor _self;
+  final $Res Function(RejectInstructor) _then;
+
+/// Create a copy of UserListEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? reason = null,}) {
+  return _then(RejectInstructor(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,reason: null == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 // dart format on

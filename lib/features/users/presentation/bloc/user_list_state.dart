@@ -12,6 +12,11 @@ sealed class UserListState with _$UserListState {
     @Default(false) bool hasReachedMax,
     @Default(1) int currentPage,
     String? currentQuery,
+    String? currentRole,
+    bool? currentIsInstructorVerified,
     String? errorMessage,
+    @Default(false) bool isActionLoading,
+    String? actionErrorMessage,
+    String? actionSuccessMessage,
   }) = _UserListState;
 }

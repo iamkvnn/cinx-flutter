@@ -12,7 +12,11 @@ sealed class UserDto with _$UserDto {
     String? role, // USER, INSTRUCTOR, ADMIN
     String? gender, // MALE, FEMALE
     String? avatarUrl,
+    bool? isReceivePushNotification,
+    bool? isInstructorVerified,
+    String? status, // ACTIVE, BANNED, UNVERIFIED
     int? xp,
+    String? cvUrl,
   }) = _UserDto;
 
   factory UserDto.fromJson(Map<String, dynamic> json) =>

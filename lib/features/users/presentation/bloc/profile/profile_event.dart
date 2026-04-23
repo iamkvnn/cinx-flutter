@@ -11,7 +11,14 @@ class ProfileEvent with _$ProfileEvent {
     required bool isReceivePushNotification,
     String? avatarFileKey,
   }) = _UpdateProfile;
-  const factory ProfileEvent.updateAvatar(List<int> fileBytes, String fileName, String contentType) = _UpdateAvatar;
-  const factory ProfileEvent.sendChangePasswordOtp(String email) = _SendChangePasswordOtp;
-  const factory ProfileEvent.changePassword(String email, String otp, String oldPassword, String newPassword) = _ChangePassword;
+  const factory ProfileEvent.updateAvatar(
+    String filePath,
+    String fileName,
+    String contentType,
+  ) = _UpdateAvatar;
+  const factory ProfileEvent.changePassword(
+    String email,
+    String oldPassword,
+    String newPassword,
+  ) = _ChangePassword;
 }

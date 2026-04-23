@@ -46,6 +46,7 @@ dependencies:
   fpdart: ^1.2.0
   shared_preferences: ^2.5.5
   file_picker: ^11.0.2
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:

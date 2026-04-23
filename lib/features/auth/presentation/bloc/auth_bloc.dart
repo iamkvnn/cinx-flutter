@@ -1,3 +1,4 @@
+import 'package:cinx/features/users/domain/usecases/get_current_user_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../domain/usecases/check_auth_usecase.dart';
@@ -8,25 +9,37 @@ import 'auth_state.dart';
 import '../../domain/usecases/send_change_password_otp_usecase.dart';
 import '../../domain/usecases/reset_password_usecase.dart';
 
-@injectable
+@lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase _login;
   final LogoutUseCase _logout;
   final CheckAuthUseCase _checkAuth;
   final SendChangePasswordOtpUseCase _sendOtp;
   final ResetPasswordUseCase _resetPassword;
+  final GetCurrentUserUseCase _getCurrentUser;
 
-  AuthBloc(this._login, this._logout, this._checkAuth, this._sendOtp, this._resetPassword) : super(const AuthState.initial()) {
+  AuthBloc(
+    this._login,
+    this._logout,
+    this._checkAuth,
+    this._sendOtp,
+    this._resetPassword,
+    this._getCurrentUser,
+  ) : super(const AuthState.initial()) {
     on<AuthEvent>((event, emit) async {
       await event.map(
         checkStatus: (_) async {
           emit(const AuthState.loading());
           final result = await _checkAuth();
-          result.fold(
-            (l) => emit(const AuthState.unauthenticated()),
-            (isAuthenticated) {
+          await result.fold(
+            (l) async => emit(const AuthState.unauthenticated()),
+            (isAuthenticated) async {
               if (isAuthenticated) {
-                emit(const AuthState.authenticated());
+                final userResult = await _getCurrentUser();
+                userResult.fold(
+                  (l) => emit(const AuthState.authenticated()),
+                  (user) => emit(AuthState.authenticated(user: user)),
+                );
               } else {
                 emit(const AuthState.unauthenticated());
               }
@@ -36,13 +49,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loginRequested: (e) async {
           emit(const AuthState.loading());
           final result = await _login(e.email, e.password);
-          result.fold(
-            (failure) => emit(AuthState.failure(failure.message)),
-            (_) => emit(const AuthState.authenticated()),
+          await result.fold(
+            (failure) async => emit(AuthState.failure(failure.message)),
+            (_) async {
+              final userResult = await _getCurrentUser();
+              userResult.fold(
+                (l) => emit(const AuthState.authenticated()),
+                (user) => emit(AuthState.authenticated(user: user)),
+              );
+            },
           );
         },
         logoutRequested: (_) async {
-          emit(const AuthState.loading());
           await _logout();
           emit(const AuthState.unauthenticated());
         },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,8 +21,7 @@ class CourseListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<CourseListBloc>()
-        ..add(const CourseListEvent.fetchCourses(
-            sort: {'createdAt': 'DESC'})),
+        ..add(const CourseListEvent.fetchCourses(sort: {'createdAt': 'DESC'})),
       child: const _CourseListView(),
     );
   }
@@ -35,7 +35,12 @@ class _CourseListView extends StatefulWidget {
 }
 
 class _CourseListViewState extends State<_CourseListView> {
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+
   String? _selectedStatus;
+  String _sortField = 'createdAt';
+  String _sortDirection = 'DESC';
 
   static const _statusOptions = [
     null,
@@ -46,14 +51,174 @@ class _CourseListViewState extends State<_CourseListView> {
     'ARCHIVED',
   ];
 
-  void _applyFilter(String? status) {
-    setState(() => _selectedStatus = status);
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _applyFilterAndSort();
+    });
+  }
+
+  void _applyFilterAndSort() {
     context.read<CourseListBloc>().add(
-          CourseListEvent.fetchCourses(
-            status: status,
-            sort: const {'createdAt': 'DESC'},
-          ),
+      CourseListEvent.fetchCourses(
+        query: _searchController.text.trim().isEmpty
+            ? null
+            : _searchController.text.trim(),
+        status: _selectedStatus,
+        sort: {_sortField: _sortDirection},
+      ),
+    );
+  }
+
+  void _showFilterSortBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSizes.radiusLarge),
+        ),
+      ),
+      builder: (BuildContext sheetContext) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setSheetState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+                left: AppSizes.p24,
+                right: AppSizes.p24,
+                top: AppSizes.p24,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Filter & Sort',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.pop(sheetContext),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSizes.p16),
+
+                  // Status Filter
+                  Text(
+                    'Status',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSizes.p8),
+                  Wrap(
+                    spacing: AppSizes.p8,
+                    runSpacing: AppSizes.p8,
+                    children: _statusOptions.map((status) {
+                      final isSelected = _selectedStatus == status;
+                      return FilterChip(
+                        label: Text(status ?? 'All'),
+                        selected: isSelected,
+                        onSelected: (bool selected) {
+                          setSheetState(() {
+                            _selectedStatus = selected ? status : null;
+                          });
+                        },
+                        selectedColor: AppTheme.primaryColor.withValues(
+                          alpha: 0.2,
+                        ),
+                        checkmarkColor: AppTheme.primaryColor,
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: AppSizes.p24),
+
+                  // Sort Field
+                  Text(
+                    'Sort By',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSizes.p8),
+                  DropdownButtonFormField<String>(
+                    initialValue: _sortField,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'createdAt',
+                        child: Text('Created Date'),
+                      ),
+                      DropdownMenuItem(value: 'title', child: Text('Title')),
+                      DropdownMenuItem(value: 'status', child: Text('Status')),
+                    ],
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setSheetState(() {
+                          _sortField = newValue;
+                        });
+                      }
+                    },
+                  ),
+
+                  const SizedBox(height: AppSizes.p16),
+
+                  // Sort Direction
+                  Text(
+                    'Direction',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: AppSizes.p8),
+                  SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment<String>(
+                        value: 'ASC',
+                        label: Text('Ascending'),
+                      ),
+                      ButtonSegment<String>(
+                        value: 'DESC',
+                        label: Text('Descending'),
+                      ),
+                    ],
+                    selected: {_sortDirection},
+                    onSelectionChanged: (Set<String> newSelection) {
+                      setSheetState(() {
+                        _sortDirection = newSelection.first;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: AppSizes.p32),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(sheetContext);
+                        _applyFilterAndSort();
+                      },
+                      child: const Text('Apply'),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.p24),
+                ],
+              ),
+            );
+          },
         );
+      },
+    );
   }
 
   @override
@@ -64,7 +229,11 @@ class _CourseListViewState extends State<_CourseListView> {
           // Page header
           Container(
             padding: const EdgeInsets.fromLTRB(
-                AppSizes.p24, AppSizes.p24, AppSizes.p24, AppSizes.p12),
+              AppSizes.p24,
+              AppSizes.p24,
+              AppSizes.p24,
+              AppSizes.p12,
+            ),
             child: Row(
               children: [
                 Expanded(
@@ -76,32 +245,59 @@ class _CourseListViewState extends State<_CourseListView> {
               ],
             ),
           ),
-          // Status filter chips
-          SizedBox(
-            height: 48,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppSizes.p24),
-              itemCount: _statusOptions.length,
-              separatorBuilder: (_, _) =>
-                  const SizedBox(width: AppSizes.p8),
-              itemBuilder: (_, i) {
-                final status = _statusOptions[i];
-                final label = status ?? 'All';
-                final isSelected = _selectedStatus == status;
-                return FilterChip(
-                  label: Text(label),
-                  selected: isSelected,
-                  onSelected: (_) => _applyFilter(status),
-                  selectedColor:
-                      AppTheme.primaryColor.withValues(alpha: 0.2),
-                  checkmarkColor: AppTheme.primaryColor,
-                );
-              },
+          // Search & Filter header
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.p24),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    decoration: InputDecoration(
+                      hintText: 'Search courses...',
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                _searchController.clear();
+                                _onSearchChanged('');
+                                setState(() {}); // To hide clear button
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppSizes.radiusLarge,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 16,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSizes.p12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMedium),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.filter_list,
+                      color: AppTheme.primaryColor,
+                    ),
+                    onPressed: _showFilterSortBottomSheet,
+                    tooltip: 'Filter and Sort',
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: AppSizes.p8),
+          const SizedBox(height: AppSizes.p16),
           // Course list
           Expanded(
             child: BlocBuilder<CourseListBloc, CourseListState>(
@@ -114,16 +310,20 @@ class _CourseListViewState extends State<_CourseListView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.error_outline,
-                            size: 48, color: Colors.redAccent),
+                        const Icon(
+                          Icons.error_outline,
+                          size: 48,
+                          color: Colors.redAccent,
+                        ),
                         const SizedBox(height: AppSizes.p16),
                         Text(state.errorMessage!),
                         const SizedBox(height: AppSizes.p16),
                         ElevatedButton.icon(
-                          onPressed: () => context
-                              .read<CourseListBloc>()
-                              .add(const CourseListEvent.fetchCourses(
-                                  sort: {'createdAt': 'DESC'})),
+                          onPressed: () => context.read<CourseListBloc>().add(
+                            const CourseListEvent.fetchCourses(
+                              sort: {'createdAt': 'DESC'},
+                            ),
+                          ),
                           icon: const Icon(Icons.refresh),
                           label: const Text('Retry'),
                         ),
@@ -140,9 +340,9 @@ class _CourseListViewState extends State<_CourseListView> {
                   items: state.courses,
                   isLoading: state.isFetchingMore,
                   hasReachedMax: state.hasReachedMax,
-                  onLoadMore: () => context
-                      .read<CourseListBloc>()
-                      .add(const CourseListEvent.loadMore()),
+                  onLoadMore: () => context.read<CourseListBloc>().add(
+                    const CourseListEvent.loadMore(),
+                  ),
                   itemBuilder: (context, course, index) =>
                       _CourseCard(course: course),
                 );
@@ -185,7 +385,9 @@ class _CourseCard extends StatelessWidget {
       onTap: () => context.go('/courses/${course.id}'),
       child: Container(
         margin: const EdgeInsets.symmetric(
-            horizontal: AppSizes.p16, vertical: AppSizes.p8),
+          horizontal: AppSizes.p16,
+          vertical: AppSizes.p8,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
@@ -211,8 +413,7 @@ class _CourseCard extends StatelessWidget {
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) =>
-                          _ThumbnailPlaceholder(),
+                      errorBuilder: (_, _, _) => _ThumbnailPlaceholder(),
                     )
                   : _ThumbnailPlaceholder(),
             ),
@@ -226,7 +427,9 @@ class _CourseCard extends StatelessWidget {
                     Text(
                       course.title,
                       style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 14),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -240,11 +443,12 @@ class _CourseCard extends StatelessWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: statusColor.withValues(alpha: 0.12),
-                            borderRadius:
-                                BorderRadius.circular(AppSizes.p32),
+                            borderRadius: BorderRadius.circular(AppSizes.p32),
                           ),
                           child: Text(
                             course.status ?? 'DRAFT',
@@ -257,12 +461,11 @@ class _CourseCard extends StatelessWidget {
                         ),
                         const Spacer(),
                         Text(
-                          course.price != null
-                              ? '${course.price}đ'
-                              : 'Free',
+                          course.price != null ? '${course.price}đ' : 'Free',
                           style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
                         ),
                       ],
                     ),
@@ -288,8 +491,11 @@ class _ThumbnailPlaceholder extends StatelessWidget {
       width: 100,
       height: 100,
       color: AppTheme.secondaryColor.withValues(alpha: 0.3),
-      child: const Icon(Icons.school_rounded,
-          size: 40, color: AppTheme.primaryColor),
+      child: const Icon(
+        Icons.school_rounded,
+        size: 40,
+        color: AppTheme.primaryColor,
+      ),
     );
   }
 }

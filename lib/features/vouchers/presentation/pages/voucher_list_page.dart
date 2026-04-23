@@ -50,7 +50,41 @@ class _VoucherViewState extends State<_VoucherView> {
       context: context,
       builder: (_) => BlocProvider.value(
         value: context.read<VoucherListBloc>(),
-        child: const _CreateVoucherDialog(),
+        child: const _VoucherFormDialog(),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, VoucherResponse voucher) {
+    showDialog(
+      context: context,
+      builder: (_) => BlocProvider.value(
+        value: context.read<VoucherListBloc>(),
+        child: _VoucherFormDialog(voucher: voucher),
+      ),
+    );
+  }
+
+  void _showConfirmDelete(BuildContext context, String id, String code) {
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Delete Voucher'),
+        content: Text('Are you sure you want to delete voucher "$code"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogCtx).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(dialogCtx).pop();
+              context.read<VoucherListBloc>().add(VoucherListEvent.delete(id));
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }
@@ -181,7 +215,11 @@ class _VoucherViewState extends State<_VoucherView> {
                           ),
                         );
                       }
-                      return _VoucherCard(voucher: state.vouchers[index]);
+                      return _VoucherCard(
+                        voucher: state.vouchers[index],
+                        onEdit: () => _showEditDialog(context, state.vouchers[index]),
+                        onDelete: () => _showConfirmDelete(context, state.vouchers[index].id!, state.vouchers[index].code ?? ''),
+                      );
                     },
                   );
                 },
@@ -195,8 +233,15 @@ class _VoucherViewState extends State<_VoucherView> {
 }
 
 class _VoucherCard extends StatelessWidget {
-  const _VoucherCard({required this.voucher});
   final VoucherResponse voucher;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
+
+  const _VoucherCard({
+    required this.voucher,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +316,7 @@ class _VoucherCard extends StatelessWidget {
                         ),
                       const SizedBox(height: 8),
                       Text(
-                        'Discount: -${voucher.discountAmount ?? 0}đ',
+                        'Discount: -${voucher.discountAmount ?? 0}%',
                         style: const TextStyle(
                             color: Colors.redAccent,
                             fontWeight: FontWeight.bold),
@@ -287,13 +332,14 @@ class _VoucherCard extends StatelessWidget {
                 Column(
                   children: [
                     IconButton(
+                      icon: const Icon(Icons.edit_outlined,
+                          color: Colors.blueAccent),
+                      onPressed: onEdit,
+                    ),
+                    IconButton(
                       icon: const Icon(Icons.delete_outline,
                           color: Colors.redAccent),
-                      onPressed: () {
-                        if (voucher.id != null) {
-                          _showConfirmDelete(context, voucher.id!, voucher.code ?? '');
-                        }
-                      },
+                      onPressed: onDelete,
                     ),
                   ],
                 ),
@@ -304,40 +350,17 @@ class _VoucherCard extends StatelessWidget {
       ),
     );
   }
-
-  void _showConfirmDelete(BuildContext context, String id, String code) {
-    showDialog(
-      context: context,
-      builder: (dialogCtx) => AlertDialog(
-        title: const Text('Delete Voucher'),
-        content: Text('Are you sure you want to delete voucher "$code"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(dialogCtx).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(dialogCtx).pop();
-              context.read<VoucherListBloc>().add(VoucherListEvent.delete(id));
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
-class _CreateVoucherDialog extends StatefulWidget {
-  const _CreateVoucherDialog();
+class _VoucherFormDialog extends StatefulWidget {
+  final VoucherResponse? voucher;
+  const _VoucherFormDialog({this.voucher});
 
   @override
-  State<_CreateVoucherDialog> createState() => _CreateVoucherDialogState();
+  State<_VoucherFormDialog> createState() => _VoucherFormDialogState();
 }
 
-class _CreateVoucherDialogState extends State<_CreateVoucherDialog> {
+class _VoucherFormDialogState extends State<_VoucherFormDialog> {
   final _codeCtrl = TextEditingController();
   final _discountCtrl = TextEditingController();
   final _minPurchaseCtrl = TextEditingController();
@@ -346,6 +369,26 @@ class _CreateVoucherDialogState extends State<_CreateVoucherDialog> {
   final _qtyCtrl = TextEditingController();
   DateTime? _validFrom;
   DateTime? _validTo;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.voucher != null) {
+      final v = widget.voucher!;
+      _codeCtrl.text = v.code ?? '';
+      _discountCtrl.text = v.discountAmount?.toString() ?? '';
+      _minPurchaseCtrl.text = v.minPurchaseAmount?.toString() ?? '';
+      _maxDiscountCtrl.text = v.maxDiscountAmount ?? '';
+      _descCtrl.text = v.description ?? '';
+      _qtyCtrl.text = v.quantity?.toString() ?? '';
+      if (v.validFrom != null) {
+        _validFrom = DateTime.tryParse(v.validFrom!)?.toLocal();
+      }
+      if (v.validTo != null) {
+        _validTo = DateTime.tryParse(v.validTo!)?.toLocal();
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -382,14 +425,18 @@ class _CreateVoucherDialogState extends State<_CreateVoucherDialog> {
       validTo: _validTo!.toIso8601String(),
     );
 
-    context.read<VoucherListBloc>().add(VoucherListEvent.create(req));
+    if (widget.voucher != null && widget.voucher!.id != null) {
+      context.read<VoucherListBloc>().add(VoucherListEvent.update(widget.voucher!.id!, req));
+    } else {
+      context.read<VoucherListBloc>().add(VoucherListEvent.create(req));
+    }
     Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Create Voucher'),
+      title: Text(widget.voucher != null ? 'Edit Voucher' : 'Create Voucher'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -479,7 +526,7 @@ class _CreateVoucherDialogState extends State<_CreateVoucherDialog> {
         ),
         ElevatedButton(
           onPressed: _submit,
-          child: const Text('Create'),
+          child: Text(widget.voucher != null ? 'Update' : 'Create'),
         ),
       ],
     );

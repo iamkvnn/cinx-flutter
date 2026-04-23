@@ -8,6 +8,7 @@ import '../bloc/course_detail_bloc.dart';
 import '../bloc/course_detail_event.dart';
 import '../bloc/course_detail_state.dart';
 import '../../data/models/course_response.dart';
+import '../../data/models/section_response.dart';
 
 /// Full-detail page for a single course with approve / reject actions.
 class CourseDetailPage extends StatelessWidget {
@@ -179,6 +180,18 @@ class _CourseDetailContent extends StatelessWidget {
 
           // Meta info grid
           _MetaGrid(course: course),
+
+          const SizedBox(height: AppSizes.p24),
+          
+          // sections curriculum
+          const Divider(),
+          const SizedBox(height: AppSizes.p16),
+          Text(
+            'Curriculum',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: AppSizes.p16),
+          _CurriculumList(sections: course.sections),
 
           const SizedBox(height: AppSizes.p32),
 
@@ -390,21 +403,19 @@ class _ActionButtons extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(dialogCtx).pop(),
+            onPressed: () => Navigator.pop(dialogCtx),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
               final reason = controller.text.trim();
               if (reason.isEmpty) return;
-              Navigator.of(dialogCtx).pop();
               context.read<CourseDetailBloc>().add(
                     CourseDetailEvent.reject(courseId, reason),
                   );
+              Navigator.pop(dialogCtx);
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
             child: const Text('Confirm Reject'),
           ),
         ],
@@ -412,3 +423,71 @@ class _ActionButtons extends StatelessWidget {
     );
   }
 }
+
+class _CurriculumList extends StatelessWidget {
+  const _CurriculumList({this.sections});
+
+  final List<SectionResponse>? sections;
+
+  @override
+  Widget build(BuildContext context) {
+    if (sections == null || sections!.isEmpty) {
+      return const Text('No curriculum available.', style: TextStyle(color: Colors.grey));
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: sections!.length,
+      itemBuilder: (context, index) {
+        final section = sections![index];
+        return Card(
+          elevation: 1,
+          margin: const EdgeInsets.only(bottom: AppSizes.p12),
+          child: ExpansionTile(
+            title: Text(
+              section.title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text('${section.lessons.length} lessons'),
+            children: section.lessons.map((lesson) {
+              return ListTile(
+                leading: Icon(
+                  lesson.lessonType == 'VIDEO' ? Icons.play_circle_fill : Icons.article,
+                  color: AppTheme.primaryColor,
+                ),
+                title: Text(lesson.title),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+}
+//           ),
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () => Navigator.of(dialogCtx).pop(),
+//             child: const Text('Cancel'),
+//           ),
+//           ElevatedButton(
+//             onPressed: () {
+//               final reason = controller.text.trim();
+//               if (reason.isEmpty) return;
+//               Navigator.of(dialogCtx).pop();
+//               context.read<CourseDetailBloc>().add(
+//                     CourseDetailEvent.reject(courseId, reason),
+//                   );
+//             },
+//             style: ElevatedButton.styleFrom(
+//               backgroundColor: Colors.redAccent,
+//             ),
+//             child: const Text('Confirm Reject'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

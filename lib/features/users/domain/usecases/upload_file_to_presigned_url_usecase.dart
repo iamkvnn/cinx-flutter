@@ -9,7 +9,7 @@ class UploadFileToPresignedUrlUseCase {
 
   UploadFileToPresignedUrlUseCase(this.repository);
 
-  Future<Either<Failure, void>> call(String presignedUrl, List<int> fileBytes, String contentType) {
-    return repository.uploadFileToPresignedUrl(presignedUrl, fileBytes, contentType);
+  Future<Either<Failure, void>> call(String presignedUrl, String filePath, String contentType) {
+    return repository.uploadFileToPresignedUrl(presignedUrl, filePath, contentType);
   }
 }

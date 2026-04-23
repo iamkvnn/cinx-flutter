@@ -27,6 +27,11 @@ abstract class VoucherRemoteDataSource {
   Future<ApiResponse<void>> createVoucher(
       @Body() CreateVoucherRequest request);
 
+  @PUT('/api/v1/vouchers/{id}')
+  Future<ApiResponse<void>> updateVoucher(
+      @Path('id') String id,
+      @Body() CreateVoucherRequest request);
+
   @DELETE('/api/v1/vouchers/{id}')
   Future<ApiResponse<void>> deleteVoucher(@Path('id') String id);
 }

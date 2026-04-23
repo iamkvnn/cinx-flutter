@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'category_response.dart';
 import 'instructor_response.dart';
 import 'course_image_response.dart';
+import 'section_response.dart';
 
 part 'course_response.freezed.dart';
 part 'course_response.g.dart';
@@ -20,7 +21,6 @@ sealed class CourseResponse with _$CourseResponse {
     int? discountRate,
     double? rating,
     int? enrollmentCount,
-    bool? isPublished,
     bool? isInSubscription,
     int? duration,
     bool? hasCertificate,
@@ -28,6 +28,7 @@ sealed class CourseResponse with _$CourseResponse {
     String? status, // DRAFT, WAITING_APPROVAL, PUBLISHED, REJECTED, ARCHIVED
     String? createdAt,
     String? updatedAt,
+    List<SectionResponse>? sections,
   }) = _CourseResponse;
 
   factory CourseResponse.fromJson(Map<String, dynamic> json) =>

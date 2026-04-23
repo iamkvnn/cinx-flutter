@@ -13,7 +13,11 @@ _UserDto _$UserDtoFromJson(Map<String, dynamic> json) => _UserDto(
   role: json['role'] as String?,
   gender: json['gender'] as String?,
   avatarUrl: json['avatarUrl'] as String?,
+  isReceivePushNotification: json['isReceivePushNotification'] as bool?,
+  isInstructorVerified: json['isInstructorVerified'] as bool?,
+  status: json['status'] as String?,
   xp: (json['xp'] as num?)?.toInt(),
+  cvUrl: json['cvUrl'] as String?,
 );
 
 Map<String, dynamic> _$UserDtoToJson(_UserDto instance) => <String, dynamic>{
@@ -23,5 +27,9 @@ Map<String, dynamic> _$UserDtoToJson(_UserDto instance) => <String, dynamic>{
   'role': instance.role,
   'gender': instance.gender,
   'avatarUrl': instance.avatarUrl,
+  'isReceivePushNotification': instance.isReceivePushNotification,
+  'isInstructorVerified': instance.isInstructorVerified,
+  'status': instance.status,
   'xp': instance.xp,
+  'cvUrl': instance.cvUrl,
 };

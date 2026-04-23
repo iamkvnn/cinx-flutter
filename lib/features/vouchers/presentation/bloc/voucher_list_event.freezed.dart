@@ -55,13 +55,14 @@ extension VoucherListEventPatterns on VoucherListEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( FetchVouchers value)?  fetch,TResult Function( LoadMoreVouchers value)?  loadMore,TResult Function( CreateVoucher value)?  create,TResult Function( DeleteVoucher value)?  delete,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( FetchVouchers value)?  fetch,TResult Function( LoadMoreVouchers value)?  loadMore,TResult Function( CreateVoucher value)?  create,TResult Function( UpdateVoucher value)?  update,TResult Function( DeleteVoucher value)?  delete,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case FetchVouchers() when fetch != null:
 return fetch(_that);case LoadMoreVouchers() when loadMore != null:
 return loadMore(_that);case CreateVoucher() when create != null:
-return create(_that);case DeleteVoucher() when delete != null:
+return create(_that);case UpdateVoucher() when update != null:
+return update(_that);case DeleteVoucher() when delete != null:
 return delete(_that);case _:
   return orElse();
 
@@ -80,13 +81,14 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( FetchVouchers value)  fetch,required TResult Function( LoadMoreVouchers value)  loadMore,required TResult Function( CreateVoucher value)  create,required TResult Function( DeleteVoucher value)  delete,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( FetchVouchers value)  fetch,required TResult Function( LoadMoreVouchers value)  loadMore,required TResult Function( CreateVoucher value)  create,required TResult Function( UpdateVoucher value)  update,required TResult Function( DeleteVoucher value)  delete,}){
 final _that = this;
 switch (_that) {
 case FetchVouchers():
 return fetch(_that);case LoadMoreVouchers():
 return loadMore(_that);case CreateVoucher():
-return create(_that);case DeleteVoucher():
+return create(_that);case UpdateVoucher():
+return update(_that);case DeleteVoucher():
 return delete(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +106,14 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( FetchVouchers value)?  fetch,TResult? Function( LoadMoreVouchers value)?  loadMore,TResult? Function( CreateVoucher value)?  create,TResult? Function( DeleteVoucher value)?  delete,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( FetchVouchers value)?  fetch,TResult? Function( LoadMoreVouchers value)?  loadMore,TResult? Function( CreateVoucher value)?  create,TResult? Function( UpdateVoucher value)?  update,TResult? Function( DeleteVoucher value)?  delete,}){
 final _that = this;
 switch (_that) {
 case FetchVouchers() when fetch != null:
 return fetch(_that);case LoadMoreVouchers() when loadMore != null:
 return loadMore(_that);case CreateVoucher() when create != null:
-return create(_that);case DeleteVoucher() when delete != null:
+return create(_that);case UpdateVoucher() when update != null:
+return update(_that);case DeleteVoucher() when delete != null:
 return delete(_that);case _:
   return null;
 
@@ -128,12 +131,13 @@ return delete(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query)?  fetch,TResult Function()?  loadMore,TResult Function( CreateVoucherRequest request)?  create,TResult Function( String id)?  delete,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query)?  fetch,TResult Function()?  loadMore,TResult Function( CreateVoucherRequest request)?  create,TResult Function( String id,  CreateVoucherRequest request)?  update,TResult Function( String id)?  delete,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case FetchVouchers() when fetch != null:
 return fetch(_that.query);case LoadMoreVouchers() when loadMore != null:
 return loadMore();case CreateVoucher() when create != null:
-return create(_that.request);case DeleteVoucher() when delete != null:
+return create(_that.request);case UpdateVoucher() when update != null:
+return update(_that.id,_that.request);case DeleteVoucher() when delete != null:
 return delete(_that.id);case _:
   return orElse();
 
@@ -152,12 +156,13 @@ return delete(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query)  fetch,required TResult Function()  loadMore,required TResult Function( CreateVoucherRequest request)  create,required TResult Function( String id)  delete,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query)  fetch,required TResult Function()  loadMore,required TResult Function( CreateVoucherRequest request)  create,required TResult Function( String id,  CreateVoucherRequest request)  update,required TResult Function( String id)  delete,}) {final _that = this;
 switch (_that) {
 case FetchVouchers():
 return fetch(_that.query);case LoadMoreVouchers():
 return loadMore();case CreateVoucher():
-return create(_that.request);case DeleteVoucher():
+return create(_that.request);case UpdateVoucher():
+return update(_that.id,_that.request);case DeleteVoucher():
 return delete(_that.id);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +180,13 @@ return delete(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query)?  fetch,TResult? Function()?  loadMore,TResult? Function( CreateVoucherRequest request)?  create,TResult? Function( String id)?  delete,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query)?  fetch,TResult? Function()?  loadMore,TResult? Function( CreateVoucherRequest request)?  create,TResult? Function( String id,  CreateVoucherRequest request)?  update,TResult? Function( String id)?  delete,}) {final _that = this;
 switch (_that) {
 case FetchVouchers() when fetch != null:
 return fetch(_that.query);case LoadMoreVouchers() when loadMore != null:
 return loadMore();case CreateVoucher() when create != null:
-return create(_that.request);case DeleteVoucher() when delete != null:
+return create(_that.request);case UpdateVoucher() when update != null:
+return update(_that.id,_that.request);case DeleteVoucher() when delete != null:
 return delete(_that.id);case _:
   return null;
 
@@ -346,6 +352,83 @@ class _$CreateVoucherCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? request = null,}) {
   return _then(CreateVoucher(
 null == request ? _self.request : request // ignore: cast_nullable_to_non_nullable
+as CreateVoucherRequest,
+  ));
+}
+
+/// Create a copy of VoucherListEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CreateVoucherRequestCopyWith<$Res> get request {
+  
+  return $CreateVoucherRequestCopyWith<$Res>(_self.request, (value) {
+    return _then(_self.copyWith(request: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class UpdateVoucher implements VoucherListEvent {
+  const UpdateVoucher(this.id, this.request);
+  
+
+ final  String id;
+ final  CreateVoucherRequest request;
+
+/// Create a copy of VoucherListEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpdateVoucherCopyWith<UpdateVoucher> get copyWith => _$UpdateVoucherCopyWithImpl<UpdateVoucher>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateVoucher&&(identical(other.id, id) || other.id == id)&&(identical(other.request, request) || other.request == request));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,request);
+
+@override
+String toString() {
+  return 'VoucherListEvent.update(id: $id, request: $request)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UpdateVoucherCopyWith<$Res> implements $VoucherListEventCopyWith<$Res> {
+  factory $UpdateVoucherCopyWith(UpdateVoucher value, $Res Function(UpdateVoucher) _then) = _$UpdateVoucherCopyWithImpl;
+@useResult
+$Res call({
+ String id, CreateVoucherRequest request
+});
+
+
+$CreateVoucherRequestCopyWith<$Res> get request;
+
+}
+/// @nodoc
+class _$UpdateVoucherCopyWithImpl<$Res>
+    implements $UpdateVoucherCopyWith<$Res> {
+  _$UpdateVoucherCopyWithImpl(this._self, this._then);
+
+  final UpdateVoucher _self;
+  final $Res Function(UpdateVoucher) _then;
+
+/// Create a copy of VoucherListEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,Object? request = null,}) {
+  return _then(UpdateVoucher(
+null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,null == request ? _self.request : request // ignore: cast_nullable_to_non_nullable
 as CreateVoucherRequest,
   ));
 }

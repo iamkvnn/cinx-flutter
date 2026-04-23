@@ -16,7 +16,7 @@ class UserListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          getIt<UserListBloc>()..add(const UserListEvent.fetch()),
+          getIt<UserListBloc>()..add(const UserListEvent.fetch(role: 'USER')),
       child: const _UserListView(),
     );
   }
@@ -97,7 +97,24 @@ class _UserListViewState extends State<_UserListView> {
           ),
           const SizedBox(height: AppSizes.p16),
           Expanded(
-            child: BlocBuilder<UserListBloc, UserListState>(
+            child: BlocConsumer<UserListBloc, UserListState>(
+              listener: (context, state) {
+                if (state.actionSuccessMessage != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.actionSuccessMessage!),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else if (state.actionErrorMessage != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.actionErrorMessage!),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                }
+              },
               builder: (context, state) {
                 if (state.isLoading) {
                   return const Center(child: CircularProgressIndicator());
@@ -230,13 +247,68 @@ class _UserCard extends StatelessWidget {
             ),
           ],
         ),
-        trailing: Text(
-          'XP: ${user.xp ?? 0}',
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            color: AppTheme.primaryColor,
-          ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'XP: ${user.xp ?? 0}',
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppTheme.primaryColor,
+              ),
+            ),
+            const SizedBox(width: AppSizes.p16),
+            if (user.status == 'BANNED')
+              IconButton(
+                icon: const Icon(Icons.lock_open, color: Colors.green),
+                tooltip: 'Unban User',
+                onPressed: () => context.read<UserListBloc>().add(UserListEvent.unbanUser(id: user.userId)),
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.lock_outline, color: Colors.redAccent),
+                tooltip: 'Ban User',
+                onPressed: () {
+                  _showBanDialog(context, user);
+                },
+              ),
+          ],
         ),
+      ),
+    );
+  }
+
+  void _showBanDialog(BuildContext context, UserDto targetUser) {
+    final controller = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Ban User'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: 'Enter reason for ban...',
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+            onPressed: () {
+              final reason = controller.text.trim();
+              if (reason.isEmpty) return;
+              context.read<UserListBloc>().add(
+                    UserListEvent.banUser(id: targetUser.userId, reason: reason),
+                  );
+              Navigator.pop(dialogCtx);
+            },
+            child: const Text('Ban'),
+          ),
+        ],
       ),
     );
   }

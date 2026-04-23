@@ -55,14 +55,13 @@ extension ProfileEventPatterns on ProfileEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadProfile value)?  loadProfile,TResult Function( _UpdateProfile value)?  updateProfile,TResult Function( _UpdateAvatar value)?  updateAvatar,TResult Function( _SendChangePasswordOtp value)?  sendChangePasswordOtp,TResult Function( _ChangePassword value)?  changePassword,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadProfile value)?  loadProfile,TResult Function( _UpdateProfile value)?  updateProfile,TResult Function( _UpdateAvatar value)?  updateAvatar,TResult Function( _ChangePassword value)?  changePassword,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _LoadProfile() when loadProfile != null:
 return loadProfile(_that);case _UpdateProfile() when updateProfile != null:
 return updateProfile(_that);case _UpdateAvatar() when updateAvatar != null:
-return updateAvatar(_that);case _SendChangePasswordOtp() when sendChangePasswordOtp != null:
-return sendChangePasswordOtp(_that);case _ChangePassword() when changePassword != null:
+return updateAvatar(_that);case _ChangePassword() when changePassword != null:
 return changePassword(_that);case _:
   return orElse();
 
@@ -81,14 +80,13 @@ return changePassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadProfile value)  loadProfile,required TResult Function( _UpdateProfile value)  updateProfile,required TResult Function( _UpdateAvatar value)  updateAvatar,required TResult Function( _SendChangePasswordOtp value)  sendChangePasswordOtp,required TResult Function( _ChangePassword value)  changePassword,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadProfile value)  loadProfile,required TResult Function( _UpdateProfile value)  updateProfile,required TResult Function( _UpdateAvatar value)  updateAvatar,required TResult Function( _ChangePassword value)  changePassword,}){
 final _that = this;
 switch (_that) {
 case _LoadProfile():
 return loadProfile(_that);case _UpdateProfile():
 return updateProfile(_that);case _UpdateAvatar():
-return updateAvatar(_that);case _SendChangePasswordOtp():
-return sendChangePasswordOtp(_that);case _ChangePassword():
+return updateAvatar(_that);case _ChangePassword():
 return changePassword(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -106,14 +104,13 @@ return changePassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadProfile value)?  loadProfile,TResult? Function( _UpdateProfile value)?  updateProfile,TResult? Function( _UpdateAvatar value)?  updateAvatar,TResult? Function( _SendChangePasswordOtp value)?  sendChangePasswordOtp,TResult? Function( _ChangePassword value)?  changePassword,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadProfile value)?  loadProfile,TResult? Function( _UpdateProfile value)?  updateProfile,TResult? Function( _UpdateAvatar value)?  updateAvatar,TResult? Function( _ChangePassword value)?  changePassword,}){
 final _that = this;
 switch (_that) {
 case _LoadProfile() when loadProfile != null:
 return loadProfile(_that);case _UpdateProfile() when updateProfile != null:
 return updateProfile(_that);case _UpdateAvatar() when updateAvatar != null:
-return updateAvatar(_that);case _SendChangePasswordOtp() when sendChangePasswordOtp != null:
-return sendChangePasswordOtp(_that);case _ChangePassword() when changePassword != null:
+return updateAvatar(_that);case _ChangePassword() when changePassword != null:
 return changePassword(_that);case _:
   return null;
 
@@ -131,14 +128,13 @@ return changePassword(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadProfile,TResult Function( String name,  String gender,  bool isReceivePushNotification,  String? avatarFileKey)?  updateProfile,TResult Function( List<int> fileBytes,  String fileName,  String contentType)?  updateAvatar,TResult Function( String email)?  sendChangePasswordOtp,TResult Function( String email,  String otp,  String oldPassword,  String newPassword)?  changePassword,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadProfile,TResult Function( String name,  String gender,  bool isReceivePushNotification,  String? avatarFileKey)?  updateProfile,TResult Function( String filePath,  String fileName,  String contentType)?  updateAvatar,TResult Function( String email,  String oldPassword,  String newPassword)?  changePassword,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoadProfile() when loadProfile != null:
 return loadProfile();case _UpdateProfile() when updateProfile != null:
 return updateProfile(_that.name,_that.gender,_that.isReceivePushNotification,_that.avatarFileKey);case _UpdateAvatar() when updateAvatar != null:
-return updateAvatar(_that.fileBytes,_that.fileName,_that.contentType);case _SendChangePasswordOtp() when sendChangePasswordOtp != null:
-return sendChangePasswordOtp(_that.email);case _ChangePassword() when changePassword != null:
-return changePassword(_that.email,_that.otp,_that.oldPassword,_that.newPassword);case _:
+return updateAvatar(_that.filePath,_that.fileName,_that.contentType);case _ChangePassword() when changePassword != null:
+return changePassword(_that.email,_that.oldPassword,_that.newPassword);case _:
   return orElse();
 
 }
@@ -156,14 +152,13 @@ return changePassword(_that.email,_that.otp,_that.oldPassword,_that.newPassword)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadProfile,required TResult Function( String name,  String gender,  bool isReceivePushNotification,  String? avatarFileKey)  updateProfile,required TResult Function( List<int> fileBytes,  String fileName,  String contentType)  updateAvatar,required TResult Function( String email)  sendChangePasswordOtp,required TResult Function( String email,  String otp,  String oldPassword,  String newPassword)  changePassword,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadProfile,required TResult Function( String name,  String gender,  bool isReceivePushNotification,  String? avatarFileKey)  updateProfile,required TResult Function( String filePath,  String fileName,  String contentType)  updateAvatar,required TResult Function( String email,  String oldPassword,  String newPassword)  changePassword,}) {final _that = this;
 switch (_that) {
 case _LoadProfile():
 return loadProfile();case _UpdateProfile():
 return updateProfile(_that.name,_that.gender,_that.isReceivePushNotification,_that.avatarFileKey);case _UpdateAvatar():
-return updateAvatar(_that.fileBytes,_that.fileName,_that.contentType);case _SendChangePasswordOtp():
-return sendChangePasswordOtp(_that.email);case _ChangePassword():
-return changePassword(_that.email,_that.otp,_that.oldPassword,_that.newPassword);case _:
+return updateAvatar(_that.filePath,_that.fileName,_that.contentType);case _ChangePassword():
+return changePassword(_that.email,_that.oldPassword,_that.newPassword);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +175,13 @@ return changePassword(_that.email,_that.otp,_that.oldPassword,_that.newPassword)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadProfile,TResult? Function( String name,  String gender,  bool isReceivePushNotification,  String? avatarFileKey)?  updateProfile,TResult? Function( List<int> fileBytes,  String fileName,  String contentType)?  updateAvatar,TResult? Function( String email)?  sendChangePasswordOtp,TResult? Function( String email,  String otp,  String oldPassword,  String newPassword)?  changePassword,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadProfile,TResult? Function( String name,  String gender,  bool isReceivePushNotification,  String? avatarFileKey)?  updateProfile,TResult? Function( String filePath,  String fileName,  String contentType)?  updateAvatar,TResult? Function( String email,  String oldPassword,  String newPassword)?  changePassword,}) {final _that = this;
 switch (_that) {
 case _LoadProfile() when loadProfile != null:
 return loadProfile();case _UpdateProfile() when updateProfile != null:
 return updateProfile(_that.name,_that.gender,_that.isReceivePushNotification,_that.avatarFileKey);case _UpdateAvatar() when updateAvatar != null:
-return updateAvatar(_that.fileBytes,_that.fileName,_that.contentType);case _SendChangePasswordOtp() when sendChangePasswordOtp != null:
-return sendChangePasswordOtp(_that.email);case _ChangePassword() when changePassword != null:
-return changePassword(_that.email,_that.otp,_that.oldPassword,_that.newPassword);case _:
+return updateAvatar(_that.filePath,_that.fileName,_that.contentType);case _ChangePassword() when changePassword != null:
+return changePassword(_that.email,_that.oldPassword,_that.newPassword);case _:
   return null;
 
 }
@@ -303,16 +297,10 @@ as String?,
 
 
 class _UpdateAvatar implements ProfileEvent {
-  const _UpdateAvatar(final  List<int> fileBytes, this.fileName, this.contentType): _fileBytes = fileBytes;
+  const _UpdateAvatar(this.filePath, this.fileName, this.contentType);
   
 
- final  List<int> _fileBytes;
- List<int> get fileBytes {
-  if (_fileBytes is EqualUnmodifiableListView) return _fileBytes;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_fileBytes);
-}
-
+ final  String filePath;
  final  String fileName;
  final  String contentType;
 
@@ -326,16 +314,16 @@ _$UpdateAvatarCopyWith<_UpdateAvatar> get copyWith => __$UpdateAvatarCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateAvatar&&const DeepCollectionEquality().equals(other._fileBytes, _fileBytes)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&(identical(other.contentType, contentType) || other.contentType == contentType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateAvatar&&(identical(other.filePath, filePath) || other.filePath == filePath)&&(identical(other.fileName, fileName) || other.fileName == fileName)&&(identical(other.contentType, contentType) || other.contentType == contentType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fileBytes),fileName,contentType);
+int get hashCode => Object.hash(runtimeType,filePath,fileName,contentType);
 
 @override
 String toString() {
-  return 'ProfileEvent.updateAvatar(fileBytes: $fileBytes, fileName: $fileName, contentType: $contentType)';
+  return 'ProfileEvent.updateAvatar(filePath: $filePath, fileName: $fileName, contentType: $contentType)';
 }
 
 
@@ -346,7 +334,7 @@ abstract mixin class _$UpdateAvatarCopyWith<$Res> implements $ProfileEventCopyWi
   factory _$UpdateAvatarCopyWith(_UpdateAvatar value, $Res Function(_UpdateAvatar) _then) = __$UpdateAvatarCopyWithImpl;
 @useResult
 $Res call({
- List<int> fileBytes, String fileName, String contentType
+ String filePath, String fileName, String contentType
 });
 
 
@@ -363,10 +351,10 @@ class __$UpdateAvatarCopyWithImpl<$Res>
 
 /// Create a copy of ProfileEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? fileBytes = null,Object? fileName = null,Object? contentType = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? filePath = null,Object? fileName = null,Object? contentType = null,}) {
   return _then(_UpdateAvatar(
-null == fileBytes ? _self._fileBytes : fileBytes // ignore: cast_nullable_to_non_nullable
-as List<int>,null == fileName ? _self.fileName : fileName // ignore: cast_nullable_to_non_nullable
+null == filePath ? _self.filePath : filePath // ignore: cast_nullable_to_non_nullable
+as String,null == fileName ? _self.fileName : fileName // ignore: cast_nullable_to_non_nullable
 as String,null == contentType ? _self.contentType : contentType // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -378,78 +366,11 @@ as String,
 /// @nodoc
 
 
-class _SendChangePasswordOtp implements ProfileEvent {
-  const _SendChangePasswordOtp(this.email);
-  
-
- final  String email;
-
-/// Create a copy of ProfileEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SendChangePasswordOtpCopyWith<_SendChangePasswordOtp> get copyWith => __$SendChangePasswordOtpCopyWithImpl<_SendChangePasswordOtp>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendChangePasswordOtp&&(identical(other.email, email) || other.email == email));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,email);
-
-@override
-String toString() {
-  return 'ProfileEvent.sendChangePasswordOtp(email: $email)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SendChangePasswordOtpCopyWith<$Res> implements $ProfileEventCopyWith<$Res> {
-  factory _$SendChangePasswordOtpCopyWith(_SendChangePasswordOtp value, $Res Function(_SendChangePasswordOtp) _then) = __$SendChangePasswordOtpCopyWithImpl;
-@useResult
-$Res call({
- String email
-});
-
-
-
-
-}
-/// @nodoc
-class __$SendChangePasswordOtpCopyWithImpl<$Res>
-    implements _$SendChangePasswordOtpCopyWith<$Res> {
-  __$SendChangePasswordOtpCopyWithImpl(this._self, this._then);
-
-  final _SendChangePasswordOtp _self;
-  final $Res Function(_SendChangePasswordOtp) _then;
-
-/// Create a copy of ProfileEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,}) {
-  return _then(_SendChangePasswordOtp(
-null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class _ChangePassword implements ProfileEvent {
-  const _ChangePassword(this.email, this.otp, this.oldPassword, this.newPassword);
+  const _ChangePassword(this.email, this.oldPassword, this.newPassword);
   
 
  final  String email;
- final  String otp;
  final  String oldPassword;
  final  String newPassword;
 
@@ -463,16 +384,16 @@ _$ChangePasswordCopyWith<_ChangePassword> get copyWith => __$ChangePasswordCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangePassword&&(identical(other.email, email) || other.email == email)&&(identical(other.otp, otp) || other.otp == otp)&&(identical(other.oldPassword, oldPassword) || other.oldPassword == oldPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChangePassword&&(identical(other.email, email) || other.email == email)&&(identical(other.oldPassword, oldPassword) || other.oldPassword == oldPassword)&&(identical(other.newPassword, newPassword) || other.newPassword == newPassword));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,email,otp,oldPassword,newPassword);
+int get hashCode => Object.hash(runtimeType,email,oldPassword,newPassword);
 
 @override
 String toString() {
-  return 'ProfileEvent.changePassword(email: $email, otp: $otp, oldPassword: $oldPassword, newPassword: $newPassword)';
+  return 'ProfileEvent.changePassword(email: $email, oldPassword: $oldPassword, newPassword: $newPassword)';
 }
 
 
@@ -483,7 +404,7 @@ abstract mixin class _$ChangePasswordCopyWith<$Res> implements $ProfileEventCopy
   factory _$ChangePasswordCopyWith(_ChangePassword value, $Res Function(_ChangePassword) _then) = __$ChangePasswordCopyWithImpl;
 @useResult
 $Res call({
- String email, String otp, String oldPassword, String newPassword
+ String email, String oldPassword, String newPassword
 });
 
 
@@ -500,10 +421,9 @@ class __$ChangePasswordCopyWithImpl<$Res>
 
 /// Create a copy of ProfileEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? otp = null,Object? oldPassword = null,Object? newPassword = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? oldPassword = null,Object? newPassword = null,}) {
   return _then(_ChangePassword(
 null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,null == otp ? _self.otp : otp // ignore: cast_nullable_to_non_nullable
 as String,null == oldPassword ? _self.oldPassword : oldPassword // ignore: cast_nullable_to_non_nullable
 as String,null == newPassword ? _self.newPassword : newPassword // ignore: cast_nullable_to_non_nullable
 as String,

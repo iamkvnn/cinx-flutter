@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../injection_container.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -13,10 +11,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<AuthBloc>(),
-      child: const _LoginView(),
-    );
+    return const _LoginView();
   }
 }
 
@@ -34,7 +29,7 @@ class _LoginViewState extends State<_LoginView> {
   final _passwordController = TextEditingController();
   final _otpController = TextEditingController();
   final _newPasswordController = TextEditingController();
-  
+
   _LoginStep _step = _LoginStep.login;
 
   @override
@@ -69,15 +64,14 @@ class _LoginViewState extends State<_LoginView> {
                 child: BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {
                     state.mapOrNull(
-                      authenticated: (_) {
-                        context.go('/dashboard');
-                      },
                       otpSent: (_) {
                         setState(() {
                           _step = _LoginStep.forgotOtp;
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('OTP sent to your email')),
+                          const SnackBar(
+                            content: Text('OTP sent to your email'),
+                          ),
                         );
                       },
                       passwordResetSuccess: (_) {
@@ -85,13 +79,17 @@ class _LoginViewState extends State<_LoginView> {
                           _step = _LoginStep.login;
                         });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Password reset successfully. You can now login.')),
+                          const SnackBar(
+                            content: Text(
+                              'Password reset successfully. You can now login.',
+                            ),
+                          ),
                         );
                       },
                       failure: (f) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(f.message)),
-                        );
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(f.message)));
                       },
                     );
                   },
@@ -105,18 +103,20 @@ class _LoginViewState extends State<_LoginView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          _step == _LoginStep.login 
-                              ? 'Cinx Admin' 
-                              : _step == _LoginStep.forgotEmail 
-                                  ? 'Forgot Password'
-                                  : 'Reset Password',
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          _step == _LoginStep.login
+                              ? 'Cinx Admin'
+                              : _step == _LoginStep.forgotEmail
+                              ? 'Forgot Password'
+                              : 'Reset Password',
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(
                                 color: Theme.of(context).colorScheme.onPrimary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
                         const SizedBox(height: AppSizes.p32),
-                        if (_step == _LoginStep.login || _step == _LoginStep.forgotEmail)
+                        if (_step == _LoginStep.login ||
+                            _step == _LoginStep.forgotEmail)
                           TextField(
                             controller: _emailController,
                             decoration: const InputDecoration(
@@ -143,7 +143,14 @@ class _LoginViewState extends State<_LoginView> {
                                   _step = _LoginStep.forgotEmail;
                                 });
                               },
-                              child: Text('Forgot Password?', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                              child: Text(
+                                'Forgot Password?',
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -175,34 +182,37 @@ class _LoginViewState extends State<_LoginView> {
                                 : () {
                                     if (_step == _LoginStep.login) {
                                       context.read<AuthBloc>().add(
-                                            AuthEvent.loginRequested(
-                                              _emailController.text,
-                                              _passwordController.text,
-                                            ),
-                                          );
-                                    } else if (_step == _LoginStep.forgotEmail) {
+                                        AuthEvent.loginRequested(
+                                          _emailController.text,
+                                          _passwordController.text,
+                                        ),
+                                      );
+                                    } else if (_step ==
+                                        _LoginStep.forgotEmail) {
                                       context.read<AuthBloc>().add(
-                                            AuthEvent.sendForgotPasswordOtp(
-                                              _emailController.text,
-                                            ),
-                                          );
+                                        AuthEvent.sendForgotPasswordOtp(
+                                          _emailController.text,
+                                        ),
+                                      );
                                     } else if (_step == _LoginStep.forgotOtp) {
                                       context.read<AuthBloc>().add(
-                                            AuthEvent.resetPasswordRequested(
-                                              _emailController.text,
-                                              _otpController.text,
-                                              _newPasswordController.text,
-                                            ),
-                                          );
+                                        AuthEvent.resetPasswordRequested(
+                                          _emailController.text,
+                                          _otpController.text,
+                                          _newPasswordController.text,
+                                        ),
+                                      );
                                     }
                                   },
                             child: isLoading
                                 ? const CircularProgressIndicator()
-                                : Text(_step == _LoginStep.login 
-                                    ? 'Login' 
-                                    : _step == _LoginStep.forgotEmail 
-                                        ? 'Send OTP' 
-                                        : 'Reset Password'),
+                                : Text(
+                                    _step == _LoginStep.login
+                                        ? 'Login'
+                                        : _step == _LoginStep.forgotEmail
+                                        ? 'Send OTP'
+                                        : 'Reset Password',
+                                  ),
                           ),
                         ),
                         if (_step != _LoginStep.login)
@@ -212,7 +222,12 @@ class _LoginViewState extends State<_LoginView> {
                                 _step = _LoginStep.login;
                               });
                             },
-                            child: Text('Back to Login', style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
+                            child: Text(
+                              'Back to Login',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
                           ),
                       ],
                     );

@@ -9,10 +9,26 @@ abstract class UserRepository {
     int? size,
     String? query,
     String? sort,
+    String? role,
+    bool? isInstructorVerified,
   });
 
   Future<Either<Failure, UserDto>> getCurrentUser();
-  Future<Either<Failure, UserDto>> updateUser(String id, Map<String, dynamic> data);
-  Future<Either<Failure, Map<String, dynamic>>> getPresignedUrl(String fileName, String contentType);
-  Future<Either<Failure, void>> uploadFileToPresignedUrl(String presignedUrl, List<int> fileBytes, String contentType);
+  Future<Either<Failure, UserDto>> updateUser(
+    String id,
+    Map<String, dynamic> data,
+  );
+  Future<Either<Failure, Map<String, dynamic>>> getPresignedUrl(
+    String fileName,
+    String contentType,
+  );
+  Future<Either<Failure, void>> uploadFileToPresignedUrl(
+    String presignedUrl,
+    String filePath,
+    String contentType,
+  );
+  Future<Either<Failure, void>> banUser(String id, String reason);
+  Future<Either<Failure, void>> unbanUser(String id);
+  Future<Either<Failure, void>> verifyInstructor(String id);
+  Future<Either<Failure, void>> rejectInstructor(String id, String reason);
 }

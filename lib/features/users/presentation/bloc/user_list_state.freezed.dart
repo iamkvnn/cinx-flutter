@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserListState {
 
- List<UserDto> get users; bool get isLoading; bool get isFetchingMore; bool get hasReachedMax; int get currentPage; String? get currentQuery; String? get errorMessage;
+ List<UserDto> get users; bool get isLoading; bool get isFetchingMore; bool get hasReachedMax; int get currentPage; String? get currentQuery; String? get currentRole; bool? get currentIsInstructorVerified; String? get errorMessage; bool get isActionLoading; String? get actionErrorMessage; String? get actionSuccessMessage;
 /// Create a copy of UserListState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $UserListStateCopyWith<UserListState> get copyWith => _$UserListStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserListState&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isFetchingMore, isFetchingMore) || other.isFetchingMore == isFetchingMore)&&(identical(other.hasReachedMax, hasReachedMax) || other.hasReachedMax == hasReachedMax)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.currentQuery, currentQuery) || other.currentQuery == currentQuery)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserListState&&const DeepCollectionEquality().equals(other.users, users)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isFetchingMore, isFetchingMore) || other.isFetchingMore == isFetchingMore)&&(identical(other.hasReachedMax, hasReachedMax) || other.hasReachedMax == hasReachedMax)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.currentQuery, currentQuery) || other.currentQuery == currentQuery)&&(identical(other.currentRole, currentRole) || other.currentRole == currentRole)&&(identical(other.currentIsInstructorVerified, currentIsInstructorVerified) || other.currentIsInstructorVerified == currentIsInstructorVerified)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.actionErrorMessage, actionErrorMessage) || other.actionErrorMessage == actionErrorMessage)&&(identical(other.actionSuccessMessage, actionSuccessMessage) || other.actionSuccessMessage == actionSuccessMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(users),isLoading,isFetchingMore,hasReachedMax,currentPage,currentQuery,errorMessage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(users),isLoading,isFetchingMore,hasReachedMax,currentPage,currentQuery,currentRole,currentIsInstructorVerified,errorMessage,isActionLoading,actionErrorMessage,actionSuccessMessage);
 
 @override
 String toString() {
-  return 'UserListState(users: $users, isLoading: $isLoading, isFetchingMore: $isFetchingMore, hasReachedMax: $hasReachedMax, currentPage: $currentPage, currentQuery: $currentQuery, errorMessage: $errorMessage)';
+  return 'UserListState(users: $users, isLoading: $isLoading, isFetchingMore: $isFetchingMore, hasReachedMax: $hasReachedMax, currentPage: $currentPage, currentQuery: $currentQuery, currentRole: $currentRole, currentIsInstructorVerified: $currentIsInstructorVerified, errorMessage: $errorMessage, isActionLoading: $isActionLoading, actionErrorMessage: $actionErrorMessage, actionSuccessMessage: $actionSuccessMessage)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $UserListStateCopyWith<$Res>  {
   factory $UserListStateCopyWith(UserListState value, $Res Function(UserListState) _then) = _$UserListStateCopyWithImpl;
 @useResult
 $Res call({
- List<UserDto> users, bool isLoading, bool isFetchingMore, bool hasReachedMax, int currentPage, String? currentQuery, String? errorMessage
+ List<UserDto> users, bool isLoading, bool isFetchingMore, bool hasReachedMax, int currentPage, String? currentQuery, String? currentRole, bool? currentIsInstructorVerified, String? errorMessage, bool isActionLoading, String? actionErrorMessage, String? actionSuccessMessage
 });
 
 
@@ -62,7 +62,7 @@ class _$UserListStateCopyWithImpl<$Res>
 
 /// Create a copy of UserListState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? users = null,Object? isLoading = null,Object? isFetchingMore = null,Object? hasReachedMax = null,Object? currentPage = null,Object? currentQuery = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? users = null,Object? isLoading = null,Object? isFetchingMore = null,Object? hasReachedMax = null,Object? currentPage = null,Object? currentQuery = freezed,Object? currentRole = freezed,Object? currentIsInstructorVerified = freezed,Object? errorMessage = freezed,Object? isActionLoading = null,Object? actionErrorMessage = freezed,Object? actionSuccessMessage = freezed,}) {
   return _then(_self.copyWith(
 users: null == users ? _self.users : users // ignore: cast_nullable_to_non_nullable
 as List<UserDto>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,12 @@ as bool,isFetchingMore: null == isFetchingMore ? _self.isFetchingMore : isFetchi
 as bool,hasReachedMax: null == hasReachedMax ? _self.hasReachedMax : hasReachedMax // ignore: cast_nullable_to_non_nullable
 as bool,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,currentQuery: freezed == currentQuery ? _self.currentQuery : currentQuery // ignore: cast_nullable_to_non_nullable
-as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,currentRole: freezed == currentRole ? _self.currentRole : currentRole // ignore: cast_nullable_to_non_nullable
+as String?,currentIsInstructorVerified: freezed == currentIsInstructorVerified ? _self.currentIsInstructorVerified : currentIsInstructorVerified // ignore: cast_nullable_to_non_nullable
+as bool?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
+as bool,actionErrorMessage: freezed == actionErrorMessage ? _self.actionErrorMessage : actionErrorMessage // ignore: cast_nullable_to_non_nullable
+as String?,actionSuccessMessage: freezed == actionSuccessMessage ? _self.actionSuccessMessage : actionSuccessMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -153,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<UserDto> users,  bool isLoading,  bool isFetchingMore,  bool hasReachedMax,  int currentPage,  String? currentQuery,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<UserDto> users,  bool isLoading,  bool isFetchingMore,  bool hasReachedMax,  int currentPage,  String? currentQuery,  String? currentRole,  bool? currentIsInstructorVerified,  String? errorMessage,  bool isActionLoading,  String? actionErrorMessage,  String? actionSuccessMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserListState() when $default != null:
-return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReachedMax,_that.currentPage,_that.currentQuery,_that.errorMessage);case _:
+return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReachedMax,_that.currentPage,_that.currentQuery,_that.currentRole,_that.currentIsInstructorVerified,_that.errorMessage,_that.isActionLoading,_that.actionErrorMessage,_that.actionSuccessMessage);case _:
   return orElse();
 
 }
@@ -174,10 +179,10 @@ return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReache
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<UserDto> users,  bool isLoading,  bool isFetchingMore,  bool hasReachedMax,  int currentPage,  String? currentQuery,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<UserDto> users,  bool isLoading,  bool isFetchingMore,  bool hasReachedMax,  int currentPage,  String? currentQuery,  String? currentRole,  bool? currentIsInstructorVerified,  String? errorMessage,  bool isActionLoading,  String? actionErrorMessage,  String? actionSuccessMessage)  $default,) {final _that = this;
 switch (_that) {
 case _UserListState():
-return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReachedMax,_that.currentPage,_that.currentQuery,_that.errorMessage);}
+return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReachedMax,_that.currentPage,_that.currentQuery,_that.currentRole,_that.currentIsInstructorVerified,_that.errorMessage,_that.isActionLoading,_that.actionErrorMessage,_that.actionSuccessMessage);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,10 +196,10 @@ return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReache
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<UserDto> users,  bool isLoading,  bool isFetchingMore,  bool hasReachedMax,  int currentPage,  String? currentQuery,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<UserDto> users,  bool isLoading,  bool isFetchingMore,  bool hasReachedMax,  int currentPage,  String? currentQuery,  String? currentRole,  bool? currentIsInstructorVerified,  String? errorMessage,  bool isActionLoading,  String? actionErrorMessage,  String? actionSuccessMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _UserListState() when $default != null:
-return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReachedMax,_that.currentPage,_that.currentQuery,_that.errorMessage);case _:
+return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReachedMax,_that.currentPage,_that.currentQuery,_that.currentRole,_that.currentIsInstructorVerified,_that.errorMessage,_that.isActionLoading,_that.actionErrorMessage,_that.actionSuccessMessage);case _:
   return null;
 
 }
@@ -206,7 +211,7 @@ return $default(_that.users,_that.isLoading,_that.isFetchingMore,_that.hasReache
 
 
 class _UserListState implements UserListState {
-  const _UserListState({final  List<UserDto> users = const [], this.isLoading = true, this.isFetchingMore = false, this.hasReachedMax = false, this.currentPage = 1, this.currentQuery, this.errorMessage}): _users = users;
+  const _UserListState({final  List<UserDto> users = const [], this.isLoading = true, this.isFetchingMore = false, this.hasReachedMax = false, this.currentPage = 1, this.currentQuery, this.currentRole, this.currentIsInstructorVerified, this.errorMessage, this.isActionLoading = false, this.actionErrorMessage, this.actionSuccessMessage}): _users = users;
   
 
  final  List<UserDto> _users;
@@ -221,7 +226,12 @@ class _UserListState implements UserListState {
 @override@JsonKey() final  bool hasReachedMax;
 @override@JsonKey() final  int currentPage;
 @override final  String? currentQuery;
+@override final  String? currentRole;
+@override final  bool? currentIsInstructorVerified;
 @override final  String? errorMessage;
+@override@JsonKey() final  bool isActionLoading;
+@override final  String? actionErrorMessage;
+@override final  String? actionSuccessMessage;
 
 /// Create a copy of UserListState
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +243,16 @@ _$UserListStateCopyWith<_UserListState> get copyWith => __$UserListStateCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserListState&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isFetchingMore, isFetchingMore) || other.isFetchingMore == isFetchingMore)&&(identical(other.hasReachedMax, hasReachedMax) || other.hasReachedMax == hasReachedMax)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.currentQuery, currentQuery) || other.currentQuery == currentQuery)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserListState&&const DeepCollectionEquality().equals(other._users, _users)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isFetchingMore, isFetchingMore) || other.isFetchingMore == isFetchingMore)&&(identical(other.hasReachedMax, hasReachedMax) || other.hasReachedMax == hasReachedMax)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.currentQuery, currentQuery) || other.currentQuery == currentQuery)&&(identical(other.currentRole, currentRole) || other.currentRole == currentRole)&&(identical(other.currentIsInstructorVerified, currentIsInstructorVerified) || other.currentIsInstructorVerified == currentIsInstructorVerified)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.isActionLoading, isActionLoading) || other.isActionLoading == isActionLoading)&&(identical(other.actionErrorMessage, actionErrorMessage) || other.actionErrorMessage == actionErrorMessage)&&(identical(other.actionSuccessMessage, actionSuccessMessage) || other.actionSuccessMessage == actionSuccessMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),isLoading,isFetchingMore,hasReachedMax,currentPage,currentQuery,errorMessage);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_users),isLoading,isFetchingMore,hasReachedMax,currentPage,currentQuery,currentRole,currentIsInstructorVerified,errorMessage,isActionLoading,actionErrorMessage,actionSuccessMessage);
 
 @override
 String toString() {
-  return 'UserListState(users: $users, isLoading: $isLoading, isFetchingMore: $isFetchingMore, hasReachedMax: $hasReachedMax, currentPage: $currentPage, currentQuery: $currentQuery, errorMessage: $errorMessage)';
+  return 'UserListState(users: $users, isLoading: $isLoading, isFetchingMore: $isFetchingMore, hasReachedMax: $hasReachedMax, currentPage: $currentPage, currentQuery: $currentQuery, currentRole: $currentRole, currentIsInstructorVerified: $currentIsInstructorVerified, errorMessage: $errorMessage, isActionLoading: $isActionLoading, actionErrorMessage: $actionErrorMessage, actionSuccessMessage: $actionSuccessMessage)';
 }
 
 
@@ -253,7 +263,7 @@ abstract mixin class _$UserListStateCopyWith<$Res> implements $UserListStateCopy
   factory _$UserListStateCopyWith(_UserListState value, $Res Function(_UserListState) _then) = __$UserListStateCopyWithImpl;
 @override @useResult
 $Res call({
- List<UserDto> users, bool isLoading, bool isFetchingMore, bool hasReachedMax, int currentPage, String? currentQuery, String? errorMessage
+ List<UserDto> users, bool isLoading, bool isFetchingMore, bool hasReachedMax, int currentPage, String? currentQuery, String? currentRole, bool? currentIsInstructorVerified, String? errorMessage, bool isActionLoading, String? actionErrorMessage, String? actionSuccessMessage
 });
 
 
@@ -270,7 +280,7 @@ class __$UserListStateCopyWithImpl<$Res>
 
 /// Create a copy of UserListState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? users = null,Object? isLoading = null,Object? isFetchingMore = null,Object? hasReachedMax = null,Object? currentPage = null,Object? currentQuery = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? users = null,Object? isLoading = null,Object? isFetchingMore = null,Object? hasReachedMax = null,Object? currentPage = null,Object? currentQuery = freezed,Object? currentRole = freezed,Object? currentIsInstructorVerified = freezed,Object? errorMessage = freezed,Object? isActionLoading = null,Object? actionErrorMessage = freezed,Object? actionSuccessMessage = freezed,}) {
   return _then(_UserListState(
 users: null == users ? _self._users : users // ignore: cast_nullable_to_non_nullable
 as List<UserDto>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
@@ -278,7 +288,12 @@ as bool,isFetchingMore: null == isFetchingMore ? _self.isFetchingMore : isFetchi
 as bool,hasReachedMax: null == hasReachedMax ? _self.hasReachedMax : hasReachedMax // ignore: cast_nullable_to_non_nullable
 as bool,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,currentQuery: freezed == currentQuery ? _self.currentQuery : currentQuery // ignore: cast_nullable_to_non_nullable
-as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,currentRole: freezed == currentRole ? _self.currentRole : currentRole // ignore: cast_nullable_to_non_nullable
+as String?,currentIsInstructorVerified: freezed == currentIsInstructorVerified ? _self.currentIsInstructorVerified : currentIsInstructorVerified // ignore: cast_nullable_to_non_nullable
+as bool?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
+as bool,actionErrorMessage: freezed == actionErrorMessage ? _self.actionErrorMessage : actionErrorMessage // ignore: cast_nullable_to_non_nullable
+as String?,actionSuccessMessage: freezed == actionSuccessMessage ? _self.actionSuccessMessage : actionSuccessMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

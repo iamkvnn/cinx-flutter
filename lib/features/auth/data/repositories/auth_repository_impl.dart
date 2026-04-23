@@ -56,7 +56,9 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> sendChangePasswordOtp(String email) async {
     try {
-      final response = await remoteDataSource.sendChangePasswordOtp({'email': email});
+      final response = await remoteDataSource.sendChangePasswordOtp({
+        'email': email,
+      });
       if (response.success) return const Right(null);
       return Left(ServerFailure(response.message));
     } catch (e) {
@@ -65,7 +67,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> resetPassword(String email, String otp, String newPassword) async {
+  Future<Either<Failure, void>> resetPassword(
+    String email,
+    String otp,
+    String newPassword,
+  ) async {
     try {
       final response = await remoteDataSource.resetPassword({
         'email': email,
@@ -80,11 +86,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> changePassword(String email, String otp, String oldPassword, String newPassword) async {
+  Future<Either<Failure, void>> changePassword(
+    String email,
+    String oldPassword,
+    String newPassword,
+  ) async {
     try {
       final response = await remoteDataSource.changePassword({
         'email': email,
-        'otp': otp,
         'oldPassword': oldPassword,
         'newPassword': newPassword,
       });

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../domain/usecases/get_vouchers_usecase.dart';
 import '../../domain/usecases/create_voucher_usecase.dart';
+import '../../domain/usecases/update_voucher_usecase.dart';
 import '../../domain/usecases/delete_voucher_usecase.dart';
 import 'voucher_list_event.dart';
 import 'voucher_list_state.dart';
@@ -10,11 +11,13 @@ import 'voucher_list_state.dart';
 class VoucherListBloc extends Bloc<VoucherListEvent, VoucherListState> {
   final GetVouchersUseCase _getVouchers;
   final CreateVoucherUseCase _createVoucher;
+  final UpdateVoucherUseCase _updateVoucher;
   final DeleteVoucherUseCase _deleteVoucher;
 
   VoucherListBloc(
     this._getVouchers,
     this._createVoucher,
+    this._updateVoucher,
     this._deleteVoucher,
   ) : super(const VoucherListState()) {
     on<VoucherListEvent>((event, emit) async {
@@ -22,6 +25,7 @@ class VoucherListBloc extends Bloc<VoucherListEvent, VoucherListState> {
         fetch: (e) => _onFetch(e, emit),
         loadMore: (e) => _onLoadMore(e, emit),
         create: (e) => _onCreate(e, emit),
+        update: (e) => _onUpdate(e, emit),
         delete: (e) => _onDelete(e, emit),
       );
     });
@@ -158,6 +162,33 @@ class VoucherListBloc extends Bloc<VoucherListEvent, VoucherListState> {
         emit(state.copyWith(
           isActionLoading: false,
           actionSuccessMessage: 'Voucher deleted successfully',
+        ));
+        add(const VoucherListEvent.fetch());
+      },
+    );
+  }
+
+  Future<void> _onUpdate(
+    UpdateVoucher event,
+    Emitter<VoucherListState> emit,
+  ) async {
+    emit(state.copyWith(
+      isActionLoading: true,
+      actionErrorMessage: null,
+      actionSuccessMessage: null,
+    ));
+    final result = await _updateVoucher(event.id, event.request);
+    await result.fold(
+      (failure) async {
+        emit(state.copyWith(
+          isActionLoading: false,
+          actionErrorMessage: failure.message,
+        ));
+      },
+      (_) async {
+        emit(state.copyWith(
+          isActionLoading: false,
+          actionSuccessMessage: 'Voucher updated successfully',
         ));
         add(const VoucherListEvent.fetch()); // Refresh
       },

@@ -9,7 +9,11 @@ class ChangePasswordUseCase {
 
   ChangePasswordUseCase(this.repository);
 
-  Future<Either<Failure, void>> call(String email, String otp, String oldPassword, String newPassword) {
-    return repository.changePassword(email, otp, oldPassword, newPassword);
+  Future<Either<Failure, void>> call(
+    String email,
+    String oldPassword,
+    String newPassword,
+  ) {
+    return repository.changePassword(email, oldPassword, newPassword);
   }
 }

@@ -14,5 +14,7 @@ abstract class VoucherRepository {
 
   Future<Either<Failure, void>> createVoucher(CreateVoucherRequest request);
 
+  Future<Either<Failure, void>> updateVoucher(String id, CreateVoucherRequest request);
+
   Future<Either<Failure, void>> deleteVoucher(String id);
 }
