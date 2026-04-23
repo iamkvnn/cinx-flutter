@@ -12,6 +12,7 @@
 import 'package:cinx/core/network/auth_interceptor.dart' as _i60;
 import 'package:cinx/core/network/dio_client.dart' as _i593;
 import 'package:cinx/core/router/app_router.dart' as _i599;
+import 'package:cinx/core/services/notification_service.dart' as _i1031;
 import 'package:cinx/core/services/token_storage.dart' as _i354;
 import 'package:cinx/features/auth/data/datasources/auth_remote_data_source.dart'
     as _i773;
@@ -243,6 +244,12 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i708.DashboardRepositoryImpl(gh<_i436.DashboardRemoteDataSource>()),
     );
+    gh.lazySingleton<_i1031.NotificationService>(
+      () => _i1031.NotificationService(
+        gh<_i354.TokenStorage>(),
+        gh<_i361.Dio>(instanceName: 'authenticatedDio'),
+      ),
+    );
     gh.lazySingleton<_i323.ApproveCourseUseCase>(
       () => _i323.ApproveCourseUseCase(gh<_i1028.CourseRepository>()),
     );
@@ -276,24 +283,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i828.VerifyInstructorUseCase>(
       () => _i828.VerifyInstructorUseCase(gh<_i259.UserRepository>()),
     );
-    gh.lazySingleton<_i1013.AuthBloc>(
-      () => _i1013.AuthBloc(
-        gh<_i1048.LoginUseCase>(),
-        gh<_i725.LogoutUseCase>(),
-        gh<_i330.CheckAuthUseCase>(),
-        gh<_i946.SendChangePasswordOtpUseCase>(),
-        gh<_i465.ResetPasswordUseCase>(),
-        gh<_i1047.GetCurrentUserUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i544.CategoryRepository>(
       () => _i958.CategoryRepositoryImpl(gh<_i250.CategoryRemoteDataSource>()),
     );
     gh.lazySingleton<_i86.VoucherRepository>(
       () => _i873.VoucherRepositoryImpl(gh<_i759.VoucherRemoteDataSource>()),
-    );
-    gh.lazySingleton<_i599.AppRouter>(
-      () => _i599.AppRouter(gh<_i1013.AuthBloc>()),
     );
     gh.lazySingleton<_i944.GetUsersUseCase>(
       () => _i944.GetUsersUseCase(gh<_i259.UserRepository>()),
@@ -320,6 +314,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i913.UnbanUserUseCase>(),
         gh<_i828.VerifyInstructorUseCase>(),
         gh<_i224.RejectInstructorUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i1013.AuthBloc>(
+      () => _i1013.AuthBloc(
+        gh<_i1048.LoginUseCase>(),
+        gh<_i725.LogoutUseCase>(),
+        gh<_i330.CheckAuthUseCase>(),
+        gh<_i946.SendChangePasswordOtpUseCase>(),
+        gh<_i465.ResetPasswordUseCase>(),
+        gh<_i1047.GetCurrentUserUseCase>(),
+        gh<_i1031.NotificationService>(),
       ),
     );
     gh.lazySingleton<_i943.GetNotificationsUseCase>(
@@ -373,6 +378,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1067.DashboardBloc>(
       () => _i1067.DashboardBloc(gh<_i846.GetDashboardMetricsUseCase>()),
+    );
+    gh.lazySingleton<_i599.AppRouter>(
+      () => _i599.AppRouter(gh<_i1013.AuthBloc>()),
     );
     gh.factory<_i136.NotificationBloc>(
       () => _i136.NotificationBloc(

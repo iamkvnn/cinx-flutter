@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:injectable/injectable.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
@@ -29,6 +30,7 @@ class AppRouter {
   GoRouter get router => GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/dashboard',
+    observers: [BotToastNavigatorObserver()],
     redirect: (context, state) {
       final authState = _authBloc.state;
       final isAuthenticated = authState.maybeMap(
